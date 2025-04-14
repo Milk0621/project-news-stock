@@ -41,10 +41,14 @@ def news():
     df2.to_csv("./rss.csv", index=False)
     print("저장!")
 
-    #sql 작성!
+    #감성 분석
+    #sql 작성
 
 schedule.every(10).minutes.do(news) #10분마다
+# job = schedule.every(10).minutes.do(news)
 
 while True:
+    # 자정이 되면 스케줄러 취소
+    # job.cancle()
     schedule.run_pending()
     time.sleep(2)
