@@ -21,4 +21,4 @@ cospi = yf.download(ticker, start="2023-01-01", end="2024-01-01", multi_level_in
 
 print(cospi)
 
-mpf.plot(cospi)
+mpf.plot(cospi, type="candle", style="charles", savefig="chart.png")
