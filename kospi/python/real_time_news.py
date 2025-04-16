@@ -14,7 +14,7 @@ import pymysql
 import schedule
 
 
-#연합뉴스, SBS경제, 매일경제, JTBC경제, 머니투데이
+#이데일리, 아시아경제, 매일경제, 한국경제, 머니투데이
 
 today = datetime.datetime.now()
 ymd = today.strftime("%Y-%m-%d")
