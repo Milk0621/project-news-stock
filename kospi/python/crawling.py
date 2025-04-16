@@ -61,18 +61,20 @@ for news in range(0, 3):
         #현재 열려있는 탭중 2번째 탭으로(1번 인덱스)로 전환
         time.sleep(2)
 
+        #제목
+        title = driver.title
         try:
-            #제목
-            title = driver.find_element(By.TAG_NAME, "h1").text
             #본문
             article = driver.find_element(By.TAG_NAME, "article").text
             print(title, article)
             time.sleep(2)
+            
+        except Exception as e:
+            print(e)
+            continue
+        finally:
             driver.close()
             driver.switch_to.window(driver.window_handles[0])
-            
-        except:
-            continue
         
         name = boxs[i].find_element(By.CLASS_NAME, "info_group").find_element(By.TAG_NAME, "a").text
         
