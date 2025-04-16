@@ -13,9 +13,8 @@ import pandas as pd
 import pymysql
 import schedule
 
-df = pd.DataFrame()
-df["이름"] = ["연합뉴스", "SBS경제", "매일경제", "JTBC경제"]
-names = df["이름"]
+
+#연합뉴스, SBS경제, 매일경제, JTBC경제, 머니투데이
 
 today = datetime.datetime.now()
 ymd = today.strftime("%Y-%m-%d")
