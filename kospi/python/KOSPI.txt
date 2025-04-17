@@ -16,7 +16,6 @@
     · Random Forest Classifier : 앙상블 기반 비선형 모델 (과적합 방지에 강함)
     · XGBoost Classifier : 성능 최강 트리 기반 모델 (실제 예측에서 강력함)
     · SVM Classifier : 경계기반 모델 (데이터가 작을 때 효과)
-    · LSTM (Optional) : 성능 최강 트리 기반 모델 (감성 + 시간 흐름 반영 가능) / 어려움 (회귀에 유리)
 
  - 회귀 모델 (변동률 or 종가 예측)
     · Linear Regression : 기본 모델 (baseline 용도)
