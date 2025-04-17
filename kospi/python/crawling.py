@@ -70,7 +70,7 @@ for i in range(0, 76):
             title = driver.title
             try:
                 #본문
-                #머니투데이 : news_body, 한국경제 : article-body, 머니투데이 : textBody
+                #이데일리 : news_body, 한국경제 : article-body, 머니투데이 : textBody
                 content = driver.find_element(By.XPATH, "//*[@class='news_body' or @class='article-body' or @id='textBody']")
                 inner_html = content.get_attribute("innerHTML")
                 time.sleep(2)
@@ -88,6 +88,8 @@ for i in range(0, 76):
                 pass
             
             try:
+                if con_text:
+                    raise
                 #본문
                 #아시아경제 : article, article_view , 매일경제 : news_cnt_detail_wrap
                 content_box = driver.find_element(By.XPATH, "//*[@class='article' or @class='article_view' or @class='news_cnt_detail_wrap']")
