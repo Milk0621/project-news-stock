@@ -5,6 +5,7 @@ from selenium.webdriver.chrome.options import Options
 import subprocess
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
+from bs4 import BeautifulSoup
 import time
 import datetime
 import re
@@ -20,79 +21,121 @@ options.add_argument('--ignore-certificate-errors')
 options.add_experimental_option("debuggerAddress", "127.0.0.1:9222")
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
-driver.get(f"https://search.naver.com/search.naver?where=news&query=%EC%BD%94%EC%8A%A4%ED%94%BC&sm=tab_opt&sort=0&photo=0&field=0&pd=3&ds=2025.02.01&de=2025.02.01")
+driver.get(f"https://search.naver.com/search.naver?where=news&query=%EC%BD%94%EC%8A%A4%ED%94%BC&sm=tab_opt&sort=0&photo=0&field=0&pd=3&ds=2025.04.15&de=2025.02.01&docid=&related=0&mynews=1&office_type=1&office_section_code=3&news_office_checked=1018&nso=so%3Ar%2Cp%3Afrom20250201to20250415&is_sug_officeid=0&office_category=0&service_area=0")
 
 dates = datetime.datetime(2025, 2, 1)
+# dates = dates + datetime.timedelta(days=75) 
+# print(dates) #4월 15일
+
+#언론사, 타이틀, 링크, 날짜, 본문, 이미지
+#이데일리, 아시아경제, 매일경제, 한국경제, 머니투데이
+news_id = ["1018", "1277", "1009", "1015", "1008"]
 
 news_data=[]
-for news in range(0, 3):
+for i in range(0, 60):
     month = dates.strftime("%m")
     day = dates.strftime("%d")
+    for id in news_id:
 
-    driver.get(f"https://search.naver.com/search.naver?where=news&query=%EC%BD%94%EC%8A%A4%ED%94%BC&sm=tab_opt&sort=0&photo=0&field=0&pd=3&ds=2025.{month}.{day}&de=2025.{month}.{day}")
+        driver.get(f"https://search.naver.com/search.naver?where=news&query=%EC%BD%94%EC%8A%A4%ED%94%BC&sm=tab_opt&sort=0&photo=0&field=0&pd=3&ds=2025.{month}.{day}&de=2025.{month}.{day}&docid=&related=0&mynews=1&office_type=1&office_section_code=3&news_office_checked={id}&nso=so%3Ar%2Cp%3Afrom20250201to20250415&is_sug_officeid=0&office_category=0&service_area=0")
 
-    time.sleep(2)
-    boxs = None
-    height = driver.execute_script("return document.body.scrollHeight")
-    while True:
-        boxs = driver.find_element(By.CLASS_NAME, "list_news").find_elements(By.CLASS_NAME, "bx")
-        driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
         time.sleep(2)
-        new_height = driver.execute_script("return document.body.scrollHeight")
-        count = len(boxs)
-        if count >= 20:
-            break
-        elif height == new_height:
-            break
-        height = new_height
- 
-    print(count)
-
-    for i, _ in enumerate(boxs):
-        time.sleep(2)
-        #print(boxs[i].get_attribute("innerHTML"))
-        link = boxs[i].find_element(By.CLASS_NAME, "news_tit").get_attribute("href")
-        time.sleep(2)
-        driver.execute_script(f"window.open('{link}', '_blank')")
-        time.sleep(1)
-
-        #새 탭으로 전환
-        driver.switch_to.window(driver.window_handles[1])
-        #현재 열려있는 탭중 2번째 탭으로(1번 인덱스)로 전환
-        time.sleep(2)
-
-        #제목
-        title = driver.title
+        boxs = None
+        height = driver.execute_script("return document.body.scrollHeight")
         try:
-            #본문
-            article = driver.find_element(By.TAG_NAME, "article").text
-            print(title, article)
-            time.sleep(2)
-            
-        except Exception as e:
-            print(e)
+            while True:
+                boxs = driver.find_element(By.CLASS_NAME, "list_news").find_elements(By.CLASS_NAME, "bx")
+                driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
+                time.sleep(2)
+                new_height = driver.execute_script("return document.body.scrollHeight")
+                if height == new_height:
+                    break
+                height = new_height
+        except:
             continue
-        finally:
+
+        for i, _ in enumerate(boxs):
+            time.sleep(2)
+            link = boxs[i].find_element(By.CLASS_NAME, "news_tit").get_attribute("href")
+            time.sleep(2)
+            driver.execute_script(f"window.open('{link}', '_blank')")
+            time.sleep(1)
+
+            #새 탭으로 전환
+            driver.switch_to.window(driver.window_handles[1])
+            #현재 열려있는 탭중 2번째 탭으로(1번 인덱스)로 전환
+            time.sleep(2)
+
+            #제목
+            title = driver.title
+            try:
+                #본문
+                #머니투데이 : news_body, 한국경제 : article-body, 머니투데이 : textBody
+                content = driver.find_element(By.XPATH, "//*[@class='news_body' or @class='article-body' or @id='textBody']")
+                inner_html = content.get_attribute("innerHTML")
+                time.sleep(2)
+
+                soup = BeautifulSoup(inner_html, "html.parser")
+
+                for child in soup.find_all(recursive=False):
+                    #직계자손 html에서 삭제
+                    child.decompose()
+                
+                con_text = soup.get_text(strip=True)
+                
+            except:
+                print("bs 본문 못 찾음")
+                pass
+            
+            try:
+                #본문
+                #아시아경제 : article , 매일경제 : news_cnt_detail_wrap
+                content_box = driver.find_element(By.XPATH, "//*[@class='article' or @class='news_cnt_detail_wrap']")
+                content = content_box.find_elements(By.CSS_SELECTOR, "p")
+
+                con_text = " ".join([p.text.strip() for p in content])
+
+            except:
+                print("p 본문 못 찾음")
+                pass
+
+            try: 
+                #이미지
+                #이데일리 : news_body, 아시아경제 : img_link, 매일경제 : thumb, 한국경제 : figure-img, 머니투데이 : img
+                img_box = driver.find_element(By.XPATH, "//*[@class='news_body' or @class='img_link' or @class='thumb' or @class='figure-img' or @class='img']")
+                img = img_box.find_element(By.TAG_NAME, "img").get_attribute("src")
+                #이데일리
+            except:
+                print("이미지 못 찾음")
+                img = ""
+
             driver.close()
             driver.switch_to.window(driver.window_handles[0])
-        
-        name = boxs[i].find_element(By.CLASS_NAME, "info_group").find_element(By.TAG_NAME, "a").text
-        
-        dict = {
-            "name" : name,
-            "title" : title,
-            "link" : link,
-            "date" : dates,
-            "content" : article
-        }
-        news_data.append(dict)
-        print(f"{news}의 {i}번째 저장!")
+            
+            name_box = boxs[i].find_element(By.CSS_SELECTOR, ".info_group>a")
+            name_html = name_box.get_attribute("innerHTML")
 
+            name_soup = BeautifulSoup(name_html, "html.parser")
+            for child in name_soup.find_all(recursive=False):
+                child.decompose()
+            
+            name = name_soup.get_text(strip=True)
+
+            dict = {
+                "name" : name,
+                "title" : title,
+                "link" : link,
+                "content" : con_text,
+                "img" : img,
+                "date" : dates
+            }
+            news_data.append(dict)
+            print(f"{id}의 {i}번째 저장!")
+            
     dates = dates + datetime.timedelta(days=1)
 
-    print(day)
 
 df = pd.DataFrame(news_data)
-df.to_csv("./news_data.csv", index=True)
+df.to_csv("./news_data.csv", index=False)
 
 driver.quit()
