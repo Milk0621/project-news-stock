@@ -21,11 +21,11 @@ options.add_argument('--ignore-certificate-errors')
 options.add_experimental_option("debuggerAddress", "127.0.0.1:9222")
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
-driver.get(f"https://search.naver.com/search.naver?where=news&query=%EC%BD%94%EC%8A%A4%ED%94%BC&sm=tab_opt&sort=0&photo=0&field=0&pd=3&ds=2025.04.15&de=2025.02.01&docid=&related=0&mynews=1&office_type=1&office_section_code=3&news_office_checked=1018&nso=so%3Ar%2Cp%3Afrom20250201to20250415&is_sug_officeid=0&office_category=0&service_area=0")
+driver.get(f"https://search.naver.com/search.naver?where=news&query=%EC%BD%94%EC%8A%A4%ED%94%BC&sm=tab_opt&sort=0&photo=0&field=0&pd=3&ds=2025.02.01&de=2025.02.01&docid=&related=0&mynews=1&office_type=1&office_section_code=3&news_office_checked=1018&nso=so%3Ar%2Cp%3Afrom20250201to20250415&is_sug_officeid=0&office_category=0&service_area=0")
 
 dates = datetime.datetime(2025, 2, 1)
 # dates = dates + datetime.timedelta(days=76) 
-# print(dates) #4월 16일
+# print(dates) #4월 17일
 
 #언론사, 타이틀, 링크, 날짜, 본문, 이미지
 #이데일리, 아시아경제, 매일경제, 한국경제, 머니투데이
@@ -44,7 +44,7 @@ for i in range(0, 76):
         height = driver.execute_script("return document.body.scrollHeight")
         try:
             while True:
-                boxs = driver.find_element(By.CLASS_NAME, "list_news").find_elements(By.CLASS_NAME, "bx")
+                boxs = driver.find_elements(By.CSS_SELECTOR, "div.KAo5OcERUkkJ764rHDX_")
                 driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
                 time.sleep(2)
                 new_height = driver.execute_script("return document.body.scrollHeight")
@@ -56,7 +56,7 @@ for i in range(0, 76):
 
         for i, _ in enumerate(boxs):
             time.sleep(2)
-            link = boxs[i].find_element(By.CLASS_NAME, "news_tit").get_attribute("href")
+            link = boxs[i].find_element(By.CLASS_NAME, "ItfxY53FkBwdv5zCnAIA").get_attribute("href")
             time.sleep(2)
             driver.execute_script(f"window.open('{link}', '_blank')")
             time.sleep(1)
@@ -94,7 +94,8 @@ for i in range(0, 76):
                 #아시아경제 : article, article_view , 매일경제 : news_cnt_detail_wrap
                 content_box = driver.find_element(By.XPATH, "//*[@class='article' or @class='article_view' or @class='news_cnt_detail_wrap']")
                 content = content_box.find_elements(By.CSS_SELECTOR, "p")
-
+#sds-comps-text sds-comps-text-type-body2 sds-comps-text-weight-sm
+#sds-comps-text sds-comps-text-type-body2 sds-comps-text-weight-sm
                 con_text = " ".join([p.text.strip() for p in content])
                 print(dates, id, con_text)
 
@@ -115,14 +116,7 @@ for i in range(0, 76):
             driver.close()
             driver.switch_to.window(driver.window_handles[0])
             
-            name_box = boxs[i].find_element(By.CSS_SELECTOR, ".info_group>a")
-            name_html = name_box.get_attribute("innerHTML")
-
-            name_soup = BeautifulSoup(name_html, "html.parser")
-            for child in name_soup.find_all(recursive=False):
-                child.decompose()
-            
-            name = name_soup.get_text(strip=True)
+            name = boxs[i].find_element(By.CSS_SELECTOR, ".sds-comps-text-type-body2").text
 
             dict = {
                 "name" : name,
