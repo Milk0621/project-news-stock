@@ -71,5 +71,8 @@ keywords = pd.DataFrame(keyword)
 keywords.to_csv("./datas/final/keywords.csv", index=False)
 
 
+#SQL
+
+
     
     
