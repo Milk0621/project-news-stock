@@ -99,7 +99,7 @@ for i in range(0, 77):
                 content_box = driver.find_element(By.XPATH, "//*[@class='article_view' or @class='article' or @class='news_cnt_detail_wrap']")
                 content = content_box.find_elements(By.CSS_SELECTOR, "p")
 
-                con_text = " ".join([p.text.strip() for p in content])
+                con_text = " ".join([p.text.strip().replace("\n", " ") for p in content])
                 print(dates, id, con_text)
 
             except:
