@@ -32,7 +32,7 @@ dates = datetime.datetime(2025, 2, 1)
 news_id = ["1018", "1277", "1009", "1015", "1008"]
 
 news_data=[]
-for i in range(0, 76):
+for i in range(0, 77):
     month = dates.strftime("%m")
     day = dates.strftime("%d")
     for id in news_id:
@@ -44,7 +44,8 @@ for i in range(0, 76):
         height = driver.execute_script("return document.body.scrollHeight")
         try:
             while True:
-                boxs = driver.find_elements(By.CSS_SELECTOR, "div.KAo5OcERUkkJ764rHDX_")
+                #Ermefm6A3ilpd9Zvt0OZ
+                boxs = driver.find_elements(By.CSS_SELECTOR, "div.Ermefm6A3ilpd9Zvt0OZ")
                 driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
                 time.sleep(2)
                 new_height = driver.execute_script("return document.body.scrollHeight")
@@ -53,10 +54,12 @@ for i in range(0, 76):
                 height = new_height
         except:
             continue
-
+        
         for i, _ in enumerate(boxs):
+            con_text= None
             time.sleep(2)
-            link = boxs[i].find_element(By.CLASS_NAME, "ItfxY53FkBwdv5zCnAIA").get_attribute("href")
+            #bynlPWBHumGsbotLYK9A jT1DuARpwIlNAFMacxlu
+            link = boxs[i].find_element(By.CLASS_NAME, "jT1DuARpwIlNAFMacxlu").get_attribute("href")
             time.sleep(2)
             driver.execute_script(f"window.open('{link}', '_blank')")
             time.sleep(1)
@@ -89,13 +92,13 @@ for i in range(0, 76):
             
             try:
                 if con_text:
+                    print("던져!")
                     raise
                 #본문
                 #아시아경제 : article, article_view , 매일경제 : news_cnt_detail_wrap
-                content_box = driver.find_element(By.XPATH, "//*[@class='article' or @class='article_view' or @class='news_cnt_detail_wrap']")
+                content_box = driver.find_element(By.XPATH, "//*[@class='article_view' or @class='article' or @class='news_cnt_detail_wrap']")
                 content = content_box.find_elements(By.CSS_SELECTOR, "p")
-#sds-comps-text sds-comps-text-type-body2 sds-comps-text-weight-sm
-#sds-comps-text sds-comps-text-type-body2 sds-comps-text-weight-sm
+
                 con_text = " ".join([p.text.strip() for p in content])
                 print(dates, id, con_text)
 
