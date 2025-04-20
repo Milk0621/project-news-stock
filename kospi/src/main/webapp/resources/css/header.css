@@ -1,0 +1,11 @@
+@charset "UTF-8";
+*{
+	box-sizing: border-box;
+	color: #9e9ea4;
+	font-family: "pretendard", sans-serif;
+	font-weight: 400;
+}
+.wrap {
+	width: 1200px;
+	margin: 0 auto;
+}
