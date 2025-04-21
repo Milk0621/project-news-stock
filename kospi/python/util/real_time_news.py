@@ -189,6 +189,14 @@ def fun(news):
                 select name, title from news where name = %s and title = %s
             )"""
             cursor.execute(insert_query, (news, dict["title"], dict["link"], dict["content"], dict["img"], ymd, news, dict["title"]))
+            if cursor.lastrowid > 0:
+                #뉴스가 인서트됨
+                #키워드 테이블에 인서트
+                pass
+            else:
+                #뉴스가 중복되어서 인서트 안함
+                #단어 인서트 안해도됨
+                pass
             conn.commit()
             
     elif news == "한국경제":

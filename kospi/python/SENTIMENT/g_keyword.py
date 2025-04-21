@@ -66,7 +66,7 @@ dict = {
 senti = pd.DataFrame(dict)
 news = pd.concat([news, senti], axis=1)
     
-news.to_csv("./datas/pre/test.csv", index=False)
+news.to_csv("./datas/pre/pre_news.csv", index=False)
 keywords = pd.DataFrame(keyword)
 keywords.to_csv("./datas/final/keywords.csv", index=False)
 
