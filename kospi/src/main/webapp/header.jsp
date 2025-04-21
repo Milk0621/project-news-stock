@@ -20,17 +20,17 @@
 </head>
 <body>
 <header class="wrap">
-	<h1></h1>
-	<ul>
-		<li><a onclick="location.href='home.jsp'">홈</a></li>
-		<li><a onclick="location.href='news.jsp'">뉴스</a></li>
-		<li><a onclick="location.href='datas.jsp'">날짜별 분석</a></li>
-		<li><a onclick="location.href='model.jsp'">모델 평가</a></li>
+	<h1 onclick="location.href='home.jsp'">KOSPI NEWS</h1>
+	<ul class="nav">
+		<li onclick="location.href='home.jsp'">홈</li>
+		<li onclick="location.href='news.jsp'">뉴스</li>
+		<li onclick="location.href='datas.jsp'">날짜별 분석</li>
+		<li onclick="location.href='model.jsp'">모델 평가</li>
 	</ul>
-	<ul>
-		<li><a onclick="location.href=''"><img src="./resources/img/chat.png"></a></li>
-		<li><a onclick="location.href=''"><img src="./resources/img/alram.png"></a></li>
-		<li><a onclick="location.href=''"><img src="./resources/img/user.png"></a></li>
+	<ul class="icon">
+		<li onclick="location.href=''"><img src="./resources/img/chat.png"></li>
+		<li onclick="location.href=''"><img src="./resources/img/alram.png"></li>
+		<li onclick="location.href=''"><img src="./resources/img/user.png"></li>
 	</ul>
 </header>
 </body>

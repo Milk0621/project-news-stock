@@ -4,8 +4,47 @@
 	color: #9e9ea4;
 	font-family: "pretendard", sans-serif;
 	font-weight: 400;
+	font-size: 1rem;
+}
+body, h1, h2, h3, h4, h5, p{
+	margin: 0;
+}
+ul {
+	margin: 0;
+	padding: 0;
+}
+li {
+	display: inline-block;
+	list-style: none;
+	cursor: pointer;
 }
 .wrap {
 	width: 1200px;
 	margin: 0 auto;
+}
+header.wrap {
+	display: flex;
+	align-items: center;
+    justify-content: space-between;
+    height: 100px;
+}
+header h1 {
+	font-size: 1.8rem;
+	font-weight: 900;
+	color: #e8e8ea;
+	cursor: pointer;
+}
+.nav {
+	display: flex;
+	gap: 60px;
+}
+.icon {
+	display: flex;
+	gap: 20px;
+}
+header ul li {
+	font-size: 1.2rem;
+}
+header ul li:hover {
+	color: #e8e8ea;
 }
