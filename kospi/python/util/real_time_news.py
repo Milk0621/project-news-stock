@@ -178,7 +178,7 @@ def fun(news):
                 "name" : news,
                 "title" : title.strip(),
                 "link" : link.strip(),
-                "content" : content.strip(),
+                "content" : con_text.strip(),
                 "img" : img.strip(),
                 "date" : ymd
             }
@@ -283,6 +283,9 @@ def fun(news):
                 "img" : img.strip(),
                 "date" : ymd
             }
+            
+            
+            
             news_data.append(dict)
             print(dict)
             insert_query = """insert into news(name, title, link, content, img, date) select %s, %s, %s, %s, %s, %s from dual where not exists
@@ -299,15 +302,14 @@ def fun(news):
     cursor.close()
     conn.close()
 
-fun("머니투데이")
 
-
-# #스케줄러
-# schedule.every(10).minutes.do(mail_news) #10분마다
-
-# while True:
-#     if datetime.today().hour == 00 or datetime.today().hour == 0:
-#         break
-
-#     schedule.run_pending()
-#     time.sleep(2)
+#매일경제, 이데일리, 아시아경제, 한국경제, 머니투데이
+#스케줄러
+schedule.every(15).minutes.at(":00").do(fun, "이데일리") #10분마다
+schedule.every(15).minutes.at(":03").do(fun, "아시아경제") #10분마다
+schedule.every(15).minutes.at(":06").do(fun, "한국경제") #10분마다
+schedule.every(15).minutes.at(":09").do(fun, "매일경제") #10분마다
+schedule.every(15).minutes.at(":12").do(fun, "머니투데이") #10분마다, 
+while True:
+    schedule.run_pending()
+    time.sleep(2)
