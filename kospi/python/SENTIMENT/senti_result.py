@@ -19,37 +19,37 @@ for i in date:
     bad = type[type["word_type"]==0]
     mid = type[type["word_type"]==1]
     good = type[type["word_type"]==2]
-    
+    print(good["keyword"])
     # print(good["keyword"].values)
     #감정분석 결과 (긍정, 부정, 중립)
-    good_per = (good/total_cnt)*100 
+    good_per = (good["keyword"].values/total_cnt)*100 
     # print(good_per["keyword"].values)
-    mid_per = (mid/total_cnt)*100 
-    bad_per = (bad/total_cnt)*100 
-    
-    if good["keyword"].values > bad["keyword"].values:
+    mid_per = (mid["keyword"].values/total_cnt)*100 
+    bad_per = (bad["keyword"].values/total_cnt)*100 
+    print(good_per)
+    if good_per > bad_per:
         dict = {
             "date" : i,
             "result" : "긍정",
-            "good" : good_per["keyword"].values,
-            "mid" : mid_per["keyword"].values,
-            "bad" : bad_per["keyword"].values
+            "good" : good_per,
+            "mid" : mid_per,
+            "bad" : bad_per
         }
-    elif good["keyword"].values < bad["keyword"].values:
+    elif good_per < bad_per:
         dict = {
             "date" : i,
             "result" : "부정",
-            "good" : good_per["keyword"].values,
-            "mid" : mid_per["keyword"].values,
-            "bad" : bad_per["keyword"].values
+            "good" : good_per,
+            "mid" : mid_per,
+            "bad" : bad_per
         }
     else:
         dict = {
             "date" : i,
             "result" : "중립",
-            "good" : good_per["keyword"].values,
-            "mid" : mid_per["keyword"].values,
-            "bad" : bad_per["keyword"].values
+            "good" : good_per,
+            "mid" : mid_per,
+            "bad" : bad_per
         }
     result.append(dict)
 df = pd.DataFrame(result)
