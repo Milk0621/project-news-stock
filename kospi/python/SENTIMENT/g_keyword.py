@@ -4,7 +4,8 @@ from konlpy.tag import Okt
 import re
 
 #단어 사전
-total_dict = pd.read_csv("./datas/dict/total_dict.csv")
+# total_dict = pd.read_csv("./datas/dict/total_dict.csv")
+finance = pd.read_csv("./datas/dict/finance.csv")
 
 #크롤링한 데이터
 news = pd.read_csv("./news_data.csv")
@@ -32,22 +33,22 @@ senti_score = []
 for idx, token in enumerate(tokens):
     print(f"{idx}번 뉴스 데이터 처리")
     sentiment = 0
-    for i in range(0, len(total_dict)):
-        if total_dict.word[i] in token:
-            sentiment += int(total_dict.score[i])
-            if int(total_dict.score[i]) > 0:
+    for i in range(0, len(finance)):
+        if finance.word[i] in token:
+            sentiment += int(finance.score[i])
+            if int(finance.score[i]) > 0:
                 keyword.append(
                     {
                         "date" : news.loc[idx, "date"],
-                        "keyword" : total_dict.word[i],
+                        "keyword" : finance.word[i],
                         "word_type" : 2
                     }
                              )
-            elif int(total_dict.score[i]) < 0:
+            elif int(finance.score[i]) < 0:
                 keyword.append(
                     {
                         "date" : news.loc[idx, "date"],
-                        "keyword" : total_dict.word[i],
+                        "keyword" : finance.word[i],
                         "word_type" : 0
                     }
                              )
@@ -55,7 +56,7 @@ for idx, token in enumerate(tokens):
                 keyword.append(
                     {
                         "date" : news.loc[idx, "date"],
-                        "keyword" : total_dict.word[i],
+                        "keyword" : finance.word[i],
                         "word_type" : 1
                     }
                              )
