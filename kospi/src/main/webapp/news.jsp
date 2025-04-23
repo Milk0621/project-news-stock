@@ -52,6 +52,16 @@
 					</div>
 				</div>
 			</div>
+			<ul class="news_page">
+				<li><button type="button">1</button></li>
+				<li><button type="button">2</button></li>
+				<li><button type="button">3</button></li>
+				<li><button type="button">&lt</button></li>
+				<li><button type="button">&gt</button></li>
+			</ul>
+		</div>
+		<div class="news">
+			<h1>언론사별 뉴스</h1>
 		</div>
 	</div>
 </body>
