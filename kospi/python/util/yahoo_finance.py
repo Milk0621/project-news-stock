@@ -1,24 +1,29 @@
 import yfinance as yf
 import pandas as pd
 import mplfinance as mpf
+from zoneinfo import ZoneInfo
+import numpy as np
+
 
 ticker = "^KS11"
-cospi = yf.download(ticker, start="2023-01-01", end="2024-01-01", multi_level_index=False)
-#cospi.columns = cospi.columns.get_level_values(0)
-
-#print(cospi.info())
-
-#print(type(cospi.index))
-
-#print(cospi.columns)
-
-#index
-#cospi.index = pd.to_datetime(cospi.index)
-
-# cospi["date"] = cospi.index
-
+cospi = yf.download(ticker,  period="5d", interval="1m")
+cospi["date"] = cospi.index.tz_convert(ZoneInfo("Asia/Seoul"))
 #cospi = cospi.reset_index()
 
-print(cospi)
+cospi["date"] = cospi["date"].dt.strftime("%Y-%m-%d %H:%M")
+print(cospi["date"].values.tolist())
 
-# mpf.plot(cospi, type="candle", style="charles", savefig="chart.png")
+arr_2d = np.array(cospi["Close"].values.tolist())
+
+label_list = cospi["date"].values.tolist()
+close_list = arr_2d.reshape(-1).tolist()
+dict_list = []
+for i in range(len(label_list)):
+    dict_list.append({"lebels" : label_list[i], "close" : close_list[i]})
+
+data = {
+        "labels" : cospi["date"].values.tolist(),
+        "close" : arr_2d.reshape(-1).tolist()
+    }
+print(dict_list)
+

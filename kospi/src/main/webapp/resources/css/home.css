@@ -1,0 +1,8 @@
+@charset "UTF-8";
+body {
+	background-color: #17171c;
+}
+.chart-container {
+	width : 1200px;
+	margin: 0 auto;
+}

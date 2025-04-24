@@ -1,18 +1,20 @@
 import pandas as pd
 
 day_news = pd.read_csv("./datas/final/day_news_result.csv")
-print(day_news)
+
 day_group_avg = day_news.groupby("date").mean().reset_index()
-print(day_group_avg)
+
+result = []
 for idx, ser in day_group_avg.iterrows():
-    print(ser[["0","1","2"]].idxmax())
-    #print(ser)
-    #print(i)
-# for date in range(len(day_group_avg)):
-#     day = day_group_avg["date"][date]
-#     bad = day_group_avg["0"][date]
-#     mid = day_group_avg["1"][date]
-#     good = day_group_avg["2"][date]
-#     print(day, bad, mid, good)
-#     if bad > mid | bad > good:
-#         day_group_avg["result"][date] = "부정"
+    max = ser[["0","1","2"]].idxmax()
+    if max == "0":
+        max = "부정"
+    elif max == "1":
+        max = "중립"
+    else:
+        max = "긍정"
+    result.append(max)
+
+day_group_avg["kor_result"] = result
+
+day_group_avg.to_csv("./datas/final/senti_result.csv")
