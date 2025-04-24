@@ -23,16 +23,18 @@ driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), opti
 
 driver.get(f"https://search.naver.com/search.naver?where=news&query=%EC%BD%94%EC%8A%A4%ED%94%BC&sm=tab_opt&sort=0&photo=0&field=0&pd=3&ds=2025.02.01&de=2025.02.01&docid=&related=0&mynews=1&office_type=1&office_section_code=3&news_office_checked=1018&nso=so%3Ar%2Cp%3Afrom20250201to20250415&is_sug_officeid=0&office_category=0&service_area=0")
 
-dates = datetime.datetime(2025, 4, 19)
-# dates = dates + datetime.timedelta(days=76) 
-# print(dates) #4월 17일
+dates = datetime.datetime(2024, 10, 1)
+# end = datetime.datetime(2025, 1, 31)
+# dates = dates + datetime.timedelta(days=122) 
+
+print(dates) #4월 17일
 
 #언론사, 타이틀, 링크, 날짜, 본문, 이미지
 #이데일리, 아시아경제, 매일경제, 한국경제, 머니투데이
 news_id = ["1018", "1277", "1009", "1015", "1008"]
 
 news_data=[]
-for i in range(0, 2):
+for i in range(0, 122):
     month = dates.strftime("%m")
     day = dates.strftime("%d")
     for id in news_id:

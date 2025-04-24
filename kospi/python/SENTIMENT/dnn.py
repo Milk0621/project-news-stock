@@ -35,7 +35,7 @@ X = vectorizer.fit_transform(content).toarray()
 encoder = OneHotEncoder(sparse_output=False)
 y = encoder.fit_transform(label)
 
-train_input, test_input, train_target, test_target = train_test_split(X, y, test_size=0.2)
+train_input, test_input, train_target, test_target = train_test_split(X, y, test_size=0.2, stratify=y)
 
 dense1 = keras.layers.Dense(256, activation="relu", input_shape=(X.shape[1],))
 dense2 = keras.layers.Dense(128, activation="relu")
