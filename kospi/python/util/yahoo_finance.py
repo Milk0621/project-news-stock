@@ -1,29 +1,41 @@
 import yfinance as yf
 import pandas as pd
-import mplfinance as mpf
 from zoneinfo import ZoneInfo
-import numpy as np
+import keras
+from sklearn.preprocessing import MinMaxScaler
 
+#과거 주가지수
+# ticker = "^KS11"
+# # start = "2025-04-01"
+# # end = "2025-04-14"
+# cospi = yf.download(ticker, period="1d", interval="1M")
+# cospi["date"] = cospi.index
 
-ticker = "^KS11"
-cospi = yf.download(ticker,  period="5d", interval="1m")
-cospi["date"] = cospi.index.tz_convert(ZoneInfo("Asia/Seoul"))
-#cospi = cospi.reset_index()
+# past = pd.read_csv("./datas/training/kospi.csv")
 
-cospi["date"] = cospi["date"].dt.strftime("%Y-%m-%d %H:%M")
-print(cospi["date"].values.tolist())
+# cospi.columns = cospi.columns.get_level_values(0)
 
-arr_2d = np.array(cospi["Close"].values.tolist())
+# cospi = pd.concat([past, cospi], axis=0)
 
-label_list = cospi["date"].values.tolist()
-close_list = arr_2d.reshape(-1).tolist()
-dict_list = []
-for i in range(len(label_list)):
-    dict_list.append({"lebels" : label_list[i], "close" : close_list[i]})
+# cospi.to_csv("./datas/training/kospi.csv", index=False)
 
-data = {
-        "labels" : cospi["date"].values.tolist(),
-        "close" : arr_2d.reshape(-1).tolist()
-    }
-print(dict_list)
+model = keras.models.load_model("./model/LSTM_KOSPI.keras")
 
+kospi_df = pd.read_csv("./datas/training/kospi.csv")
+kospi = kospi_df[["Close", "Volume", "High", "Low", "Open"]]
+scaler = MinMaxScaler(feature_range=(0,1))
+data_scaled = scaler.fit_transform(kospi)
+
+ans_scaler = MinMaxScaler(feature_range=(0,1))
+close_scaled = ans_scaler.fit_transform(kospi["Close"].to_numpy().reshape(-1, 1))
+
+kospi = data_scaled.reshape(1, data_scaled.shape[0], data_scaled.shape[1])
+
+pred = model.predict(kospi)
+print(pred)
+pred = ans_scaler.inverse_transform(pred)
+print(pred)
+
+#1분봉 -> 일봉????????????????????
+
+#스케줄러
