@@ -44,7 +44,7 @@ header ul li, #login-btn, #logout-btn {
 	cursor: pointer;
 	font-size: 1.2rem;
 }
-header ul li:hover, #login-btn:hover{
+header ul li:hover, #login-btn:hover, #logout-btn:hover{
 	color: #e8e8ea;
 }
 .icon {
@@ -167,7 +167,9 @@ header ul li:hover, #login-btn:hover{
     margin-bottom: 5px;
 }
 .masg-input>button{
+	width: 70px;
 	height: 40px;
 	border: none;
 	color: #000;
+	cursor: pointer;
 }
