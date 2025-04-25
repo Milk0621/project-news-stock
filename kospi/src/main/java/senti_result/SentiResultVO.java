@@ -1,6 +1,6 @@
 package senti_result;
 
-public class Senti_resultVO {
+public class SentiResultVO {
 	private String no;
 	private String bad;
 	private String date;
