@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 
-kospi_df = pd.read_csv("./datas/training/kospi.csv")
+kospi_df = pd.read_csv("./datas/training/kospi(60m).csv")
 
 close = kospi_df[["Close", "Volume", "High", "Low", "Open"]]
 
@@ -35,7 +35,7 @@ y = np.array([data_scaled[-1, 0]])
 import keras
 
 model = keras.Sequential()
-lstm = keras.layers.LSTM(100, return_sequences=False, input_shape=(data_scaled.shape[0], data_scaled.shape[1]))
+lstm = keras.layers.LSTM(100, return_sequences=True, input_shape=(data_scaled.shape[0], data_scaled.shape[1]))
 
 #flat = keras.layers.Flatten()
 

@@ -10,7 +10,7 @@ kospi_df = pd.read_csv("./datas/training/kospi.csv")
 #선형회귀 모델에 문자열 값이 들어갈 수 없으므로
 #날짜를 datetime 형식으로 변환
 kospi_df["Date"] = pd.to_datetime(kospi_df["Date"])
-
+ 
 kospi_df["Year"] = kospi_df["Date"].dt.year
 kospi_df["Month"] = kospi_df["Date"].dt.month
 kospi_df["Day"] = kospi_df["Date"].dt.day
@@ -46,5 +46,6 @@ y = test_target
 loss = mean_squared_error(y, y_hat)
 print(loss)
 
+#예측 결과
 pred = lr.predict(today_x)
 print(pred)

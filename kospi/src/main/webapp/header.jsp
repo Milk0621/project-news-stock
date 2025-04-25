@@ -1,5 +1,9 @@
+<%@page import="user.UserVO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%
+	UserVO user = (UserVO)session.getAttribute("user");
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -28,48 +32,71 @@
 		<li onclick="location.href='model.jsp'">모델 평가</li>
 	</ul>
 	<div class="icon">
+		<% if(user == null){ %>
 		<span id="login-btn">로그인</span>
-		<div class="img-box">
-			<img src="./resources/img/chat.png">
-			<img src="./resources/img/chat_hover.png">
-		</div>
-		<div class="img-box">
-			<img src="./resources/img/alram.png">
-			<img src="./resources/img/alram_hover.png">
-		</div>
-		<div class="img-box">
-			<img src="./resources/img/user.png">
-			<img src="./resources/img/user_hover.png">
-		</div>
+		<% }else if(user != null){ %>
+			<div class="img-box" id="chat-icon">
+				<img src="./resources/img/chat.png">
+				<img src="./resources/img/chat_hover.png">
+			</div>
+			<div class="img-box">
+				<img src="./resources/img/alram.png">
+				<img src="./resources/img/alram_hover.png">
+			</div>
+			<div class="img-box">
+				<img src="./resources/img/user.png">
+				<img src="./resources/img/user_hover.png">
+			</div>
+			<span id="logout-btn" onclick="location.href='./ok/logout.jsp'">로그아웃</span>
+		<% } %>
 	</div>
 	<div id="login-modal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>로그인</h2>
-            <input type="text" placeholder="아이디" name="id"><br>
-            <input type="password" placeholder="비밀번호" name="pw">
-            <div class="text-box">
-                <p>아이디가 없으신가요?</p>
-                <p id="join">회원가입</p>
-            </div>
-            <button type="submit">로그인</button>
-        </div>
+		<form action="./ok/loginok.jsp" method="post">
+	        <div class="modal-content">
+	            <span class="close">&times;</span>
+	            <h2>로그인</h2>
+	            <input type="text" placeholder="아이디" name="id"><br>
+	            <input type="password" placeholder="비밀번호" name="pw">
+	            <div class="text-box">
+	                <p>아이디가 없으신가요?</p>
+	                <p id="join">회원가입</p>
+	            </div>
+	            <button type="submit">로그인</button>
+	        </div>
+		</form>
 	</div>
     <div id="join-modal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>회원가입</h2>
-            <input type="text" placeholder="아이디" name="id"><br>
-            <input type="password" placeholder="비밀번호" name="pw"><br>
-            <input type="text" placeholder="이름" name="name">
-            <input type="text" placeholder="이메일" name="email">
-            <div class="text-box">
-                <p>이미 아이디가 있으신가요?</p>
-                <p id="login">로그인</p>
-            </div>
-            <button type="submit">회원가입</button>
-        </div>
-   </div>
+		<form action="./ok/joinok.jsp" method="post">
+	        <div class="modal-content">
+	            <span class="close">&times;</span>
+	            <h2>회원가입</h2>
+	            <input type="text" placeholder="아이디" name="id"><br>
+	            <input type="password" placeholder="비밀번호" name="pw"><br>
+	            <input type="text" placeholder="이름" name="name">
+	            <input type="text" placeholder="이메일" name="email">
+	            <input type="text" placeholder="닉네임" name="nick">
+	            <div class="text-box">
+	                <p>이미 아이디가 있으신가요?</p>
+	                <p id="login">로그인</p>
+	            </div>
+	            <button type="submit">회원가입</button>
+	        </div>
+		</form>
+	</div>
+	<div id="chat">
+		<div class="modal-chat">
+			<span class="close">&times;</span>
+			<h2>채팅</h2>
+			<div id="messages">
+				<div style="text-align:left">안녕</div>
+				<div style="text-align:right">반가워</div>
+			</div>
+			<div class="masg-input">
+				<input type="text" id="messageInput" placeholder="메시지 입력">
+	    		<button onclick="sendMessage()">전송</button>
+			</div>
+		</div>
+	</div>
 </header>
 </body>
 <script type="text/javascript">
@@ -82,7 +109,9 @@ $(document).ready(function () {
     // 모달 닫기
     $(".close").on("click", function () {
         $(".modal").fadeOut();
+        $("#chat").fadeOut();
     });
+
 
     // 배경 클릭 시 닫기
     $(window).on("click", function (event) {
@@ -105,6 +134,59 @@ $(document).ready(function () {
         $("#join-modal").fadeOut();
         $("#login-modal").fadeIn();
     });
+    
+    //채팅 모달 띄우기
+    $("#chat-icon").on("click", function () {
+		$("#chat").fadeIn();
+    });
+    
+    
+    //챗
+    let uuid = crypto.randomUUID();
+	console.log(uuid)
+	
+	const socket = new WebSocket("ws://localhost:8765/chat");
+	console.log("?????")
+	socket.onopen = () => {
+	    console.log("서버에 연결됨.");
+	    //appendMessage("서버에 연결되었습니다.");
+	    //socket.send("인원 접속")
+	};
+	
+	socket.onerror = (error) => {
+	    console.error("WebSocket 오류:", error);
+	};
+	
+	socket.onmessage = (event) => {
+		console.log(event)
+        console.log("수신:", event.data);
+		msg = JSON.parse(event.data)
+		
+		if(msg.type && msg.type == "stock"){
+			//주가 보는 화면 갱신
+		}else if(msg.type && msg.type == "noti"){
+			//알림창 갱신
+		}
+		
+        const message = document.getElementById("messages");
+        message.innerHTML += "<div style='text-align:left'>"+msg.message+"</div>"
+    };
+    
+    function sendMessage(){
+		const messageBox = document.getElementById("messageInput");
+		
+		let msg = {
+			user : uuid,
+			message : messageBox.value
+		}
+		//"{user : uuid, message : hi}"
+		socket.send(JSON.stringify(msg));
+		
+		const message = document.getElementById("messages");
+        message.innerHTML += "<div style='text-align:right'>"+messageBox.value+"</div>"
+	};
 });
+
+
 </script>
 </html>

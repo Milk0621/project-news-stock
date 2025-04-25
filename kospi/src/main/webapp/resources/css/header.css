@@ -40,7 +40,7 @@ header h1 {
 	display: flex;
 	gap: 60px;
 }
-header ul li, #login-btn {
+header ul li, #login-btn, #logout-btn {
 	cursor: pointer;
 	font-size: 1.2rem;
 }
@@ -119,4 +119,55 @@ header ul li:hover, #login-btn:hover{
 }
 #join, #login {
 	cursor: pointer;
+}
+#chat{
+	display: none;
+    position: fixed;
+    z-index: 1000;
+    right: 25px;
+    bottom: 25px;
+    width: 20%;
+    height: 45%;
+    border-radius: 10px;
+    box-shadow: 4px 4px 10px 1px #000000a8;
+}
+.modal-chat{
+	background: #2c2c35;
+    padding: 30px;
+    border-radius: 10px;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+.modal-chat h2{
+	font-size: 1.2rem;
+	margin-bottom: 10px;
+}
+#messages {
+	width: 100%;
+	height: 80%;
+	background-color: #fff;
+	margin: 0 auto;
+	padding: 15px;
+}
+.masg-input{
+	margin-top: 5px;
+	display: flex;
+    justify-content: space-between;
+}
+.masg-input>input[type="text"]{
+	width: 100%;
+    height: 40px;
+    border: none;
+    padding-left: 10px;
+    margin-bottom: 5px;
+}
+.masg-input>button{
+	height: 40px;
+	border: none;
+	color: #000;
 }

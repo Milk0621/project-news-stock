@@ -57,7 +57,7 @@ console.log(result)
 	//2. then -> 비동기로...
 	
 	
-	
+	1 + 1 -> 30초
 	
 	$.ajax({
 		url : "http://192.168.0.120:5000/stock/^KS11",
@@ -94,6 +94,7 @@ console.log(result)
 					chart.update();
 				}
 			})
+			console.log("!")
 			/* .then(data => {
 				console.log(data)
 				if(!chart){
@@ -117,8 +118,8 @@ console.log(result)
 			}) */
 	}
 	
-	fetchAndUpdate()
+	//fetchAndUpdate()
 	
-	setInterval(fetchAndUpdate, 30000);
+	//setInterval(fetchAndUpdate, 30000);
 </script>
 </html>
