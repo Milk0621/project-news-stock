@@ -62,6 +62,16 @@
 		</div>
 		<div class="news">
 			<h1>언론사별 뉴스</h1>
+			<div class="media_news">
+				<button>네이버경제</button>
+				<button>연합뉴스</button>
+				<button>SBS경제</button>
+				<button>매일경제</button>
+				<button>JTBC경제</button>
+				<div>
+					
+				</div>
+			</div>
 		</div>
 	</div>
 </body>
