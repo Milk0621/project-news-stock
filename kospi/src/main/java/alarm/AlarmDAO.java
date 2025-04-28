@@ -14,7 +14,7 @@ public class AlarmDAO extends DBManager{
 		driverLoad();
 		DBConnect();
 		
-		String sql = "select * from alarm where id = '"+id+"' and checked = 'FALSE'";
+		String sql = "select * from alarm where id = '"+id+"' and checked = 0";
 		executeQuery(sql);
 		
 		while(next()) {
@@ -30,5 +30,16 @@ public class AlarmDAO extends DBManager{
 		
 		DBDisConnect();
 		return list;
+	}
+	
+	//알람삭제
+	public void alarmDelete(String id) {
+		driverLoad();
+		DBConnect();
+		
+		String sql = "update alarm set checked = 1 where id = '"+id+"' and checked = 0";
+		executeUpdate(sql);
+		
+		DBDisConnect();
 	}
 }
