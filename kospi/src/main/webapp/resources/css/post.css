@@ -1,6 +1,17 @@
 @charset "UTF-8";
 .post_wrap {
-	width: 940px;
+	width: 900px;
 	margin: 0 auto;
 	margin-top: 50px;
+	text-align: left;
+}
+.post_wrap>img{
+	margin: 50px 0;
+}
+.post-top
+.text {
+    text-align :justify;
+    font-size: 1.1rem;
+    line-height: 1.7rem;
+    margin: 15px 0;
 }
