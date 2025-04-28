@@ -108,7 +108,15 @@ async def broadcast():
 
         # print("알림발송 완료")
 
-        
+        #yfinance 주가 받아오는 코드 호출
+        for connection in connected_clients:
+            message = {
+                "user" : "server",
+                "type" : "stock",
+                "message" : result["title"]
+            }
+            message =  json.dumps(message)
+            await connection.send(message)
 
 
         # await asyncio.sleep(10)  # 주기적 방송
