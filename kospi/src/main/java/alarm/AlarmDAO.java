@@ -14,7 +14,7 @@ public class AlarmDAO extends DBManager{
 		driverLoad();
 		DBConnect();
 		
-		String sql = "select * from alarm where id = '"+id+"' and check = 1";
+		String sql = "select * from alarm where id = '"+id+"' and checked = 'FALSE'";
 		executeQuery(sql);
 		
 		while(next()) {
@@ -24,7 +24,7 @@ public class AlarmDAO extends DBManager{
 			vo.setTitle(getString("title"));
 			vo.setContent(getString("content"));
 			vo.setDate(getString("date"));
-			vo.setCheck(getString("check"));
+			vo.setCheck(getString("checked"));
 			list.add(vo);
 		}
 		
