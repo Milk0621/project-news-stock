@@ -4,11 +4,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ include file="header.jsp" %>
-<%
-	NewsDAO dao = new NewsDAO();
-	NewsVO vo = new NewsVO();
-	List<NewsVO> list = dao.news_list(vo);
-%>
 <!DOCTYPE html>
 <html>
 <head>

@@ -3,7 +3,7 @@ import pandas as pd
 from keras._tf_keras.keras.preprocessing.text import Tokenizer
 from keras._tf_keras.keras.utils import pad_sequences
 
-model = keras.models.load_model("./model/news_rnn.keras")
+model = keras.models.load_model("./model/LSTM_NEWS.keras")
 
 # print(model.summary())
 
