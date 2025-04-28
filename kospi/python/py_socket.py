@@ -2,7 +2,8 @@ import asyncio
 import websockets
 import json
 import pymysql
-
+import lstm_result_module
+import datetime
 #pip install websockets
 # 연결된 클라이언트 목록
 connected_clients = set()
@@ -33,6 +34,9 @@ async def broadcast():
         #2. 스케줄러가 돌고 난 뒤에 데이터베이스 인서트 -> finance_notification
         #2-2 매 2초마다 finance_notification 조회 -> #select * from finance_notification where flag = false
         #2-3 만약 false가 있으면 알림발송 후, true로 업데이트
+        
+        lstm_result_module.job()
+        print("분석완료!")
 
         conn = pymysql.connect(
             host="158.247.211.92",
@@ -40,31 +44,42 @@ async def broadcast():
             password="0621",
             database="kospi"
         )
-        
+
         cursor = conn.cursor()
-        sql = "select * from finance_notification where flag = false"
+        sql = "select * from finance_notification where flag = 0"
+        print("flag=0 조회 완료")
         cursor.execute(sql)
 
         result = cursor.fetchone()
+        print(result)
         if result :
+            print("결과 있음")
             title = result["title"]
             content = result["content"]
             #매일 오후 4시반에 인서트되는 내일 코스피 지수 예측 데이터 결과값 조회
             
-            sql = "select id from user"
+            sql = "select id from user where user_type != 99"
+            print("회원 조회 완료")
             cursor.execute(sql)
             ids = cursor.fetchall()
-            title = [title] * len(ids)
-            content = [content] * len(ids)
+            # title = [title] * len(ids)
+            # content = [content] * len(ids)
+            today = datetime.datetime.now()
+            ymd = today.strftime("%Y-%m-%d")
             #ids가 20명 -> 20개
             #유저테이블에있는 모든 유저의 아이디 조회
 
-            sql = "insert into alarm(id, title, content, chekced)values(%s, %s, %s,False)"
-            cursor.executemany(sql, (ids, title, content))
+            sql = "insert into alarm(id, title, content, date)values(%s, %s, %s, %s)"
+            cursor.executemany(sql, (ids, title, content, ymd))
             conn.commit()
 
             #finance_notification의 flag를 True로 업데이트
+            sql = "update finance_notification set flag = 1"
+            cursor.execute(sql)
+            conn.commit()
+            print("flag 1로 업데이트 완료")
 
+        print("알림발송 완료")
         await asyncio.sleep(2)
 
         for connection in connected_clients:

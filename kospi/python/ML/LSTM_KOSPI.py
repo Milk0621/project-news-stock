@@ -37,8 +37,6 @@ import keras
 model = keras.Sequential()
 lstm = keras.layers.LSTM(100, return_sequences=True, input_shape=(data_scaled.shape[0], data_scaled.shape[1]))
 
-#flat = keras.layers.Flatten()
-
 dense = keras.layers.Dense(100, activation="relu")
 
 dropout = keras.layers.Dropout(0.2)
@@ -46,7 +44,6 @@ dropout = keras.layers.Dropout(0.2)
 output = keras.layers.Dense(1)
 
 model.add(lstm)
-#model.add(flat)
 model.add(dense)
 model.add(dropout)
 model.add(output)
