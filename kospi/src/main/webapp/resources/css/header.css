@@ -6,6 +6,9 @@
 	font-weight: 400;
 	font-size: 1rem;
 }
+body {
+	background-color: #17171c;
+}
 body, h1, h2, h3, h4, h5, p{
 	margin: 0;
 }

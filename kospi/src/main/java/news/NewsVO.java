@@ -1,14 +1,14 @@
 package news;
 
 public class NewsVO {
-	private String no;
-	private String content;
-	private String date;
-	private String img;
-	private String link;
 	private String name;
-	private String senti_score;
 	private String title;
+	private String link;
+	private String content;
+	private String img;
+	private String date;
+	private String senti_score;
+	private String no;
 	
 	
 	public String getNo() {

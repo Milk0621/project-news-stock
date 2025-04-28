@@ -8,7 +8,7 @@ import db.DBManager;
 public class NewsDAO extends DBManager{
 	
 	//뉴스 목록 조회
-	public List<NewsVO> news_list(NewsVO vo) {
+	public List<NewsVO> news_list() {
 		driverLoad();
 		DBConnect();
 		
