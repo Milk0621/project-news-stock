@@ -2,17 +2,17 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
-import subprocess
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
-import time
-import datetime
-from datetime import date
-import re
 import pandas as pd
 import pymysql
 import schedule
 from bs4 import BeautifulSoup
+import time
+import datetime
+from datetime import date
+import re
+import subprocess
 from pymysql.converters import escape_string
 
 chrome_browser = subprocess.Popen(r'C:\Program Files\Google\Chrome\Application\chrome.exe --remote-debugging-port=9222 --user-data-dir="C:\chromeCookie"')
@@ -141,6 +141,7 @@ def fun(news):
             }
             news_data.append(dict)
             print(dict)
+
             insert_query = """insert into news(name, title, link, content, img, date) select %s, %s, %s, %s, %s, %s from dual where not exists
             (
                 select name, title from news where name = %s and title = %s
@@ -313,11 +314,11 @@ def fun(news):
 
 #매일경제, 이데일리, 아시아경제, 한국경제, 머니투데이
 #스케줄러
-schedule.every(15).minutes.at(":00").do(fun, "이데일리") #10분마다
-schedule.every(15).minutes.at(":03").do(fun, "아시아경제") #10분마다
-schedule.every(15).minutes.at(":06").do(fun, "한국경제") #10분마다
-schedule.every(15).minutes.at(":09").do(fun, "매일경제") #10분마다
-schedule.every(15).minutes.at(":12").do(fun, "머니투데이") #10분마다, 
+schedule.every(15).minutes.at(":00").do(fun, "이데일리")
+schedule.every(15).minutes.at(":03").do(fun, "아시아경제")
+schedule.every(15).minutes.at(":06").do(fun, "한국경제")
+schedule.every(15).minutes.at(":09").do(fun, "매일경제")
+schedule.every(15).minutes.at(":12").do(fun, "머니투데이")
 while True:
     schedule.run_pending()
     time.sleep(2)

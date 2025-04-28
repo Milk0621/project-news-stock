@@ -13,19 +13,22 @@ def stock_data(symbol):
     df = yf.download(symbol, period="5d", interval="1m")
     df["date"] = df.index.tz_convert(ZoneInfo("Asia/Seoul"))
     df["date"] = df["date"].dt.strftime("%Y-%m-%d %H:%M")
-    
-    arr_2d = np.array(df["Close"].values.tolist())
+
     label_list = df["date"].values.tolist()
-    close_list = arr_2d.reshape(-1).tolist()
-    
-    dict_list = []
-    for i in range(len(label_list)):
-        dict_list.append({"lebels" : label_list[i], "close" : close_list[i]})
+    print(df["date"])
+    open_list = df["Open"].tolist()
+    print(df["Open"])
+    high_list = df["High"].tolist()
+    low_list = df["Low"].tolist()
+    close_list = df["Close"].tolist()
+
     data = {
-        "labels" : label_list,
-        "close" : close_list
+    "labels": label_list,
+    "open": open_list,
+    "high": high_list,
+    "low": low_list,
+    "close": close_list
     }
-    print(dict_list)
     return jsonify(data)
 
 if __name__ == "__main__":
