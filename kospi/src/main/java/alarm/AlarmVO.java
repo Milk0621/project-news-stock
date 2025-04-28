@@ -2,7 +2,7 @@ package alarm;
 
 public class AlarmVO {
 	private String no;
-	private String check;
+	private String checked;
 	private String content;
 	private String date;
 	private String id;
@@ -16,10 +16,10 @@ public class AlarmVO {
 		this.no = no;
 	}
 	public String getCheck() {
-		return check;
+		return checked;
 	}
 	public void setCheck(String check) {
-		this.check = check;
+		this.checked = check;
 	}
 	public String getContent() {
 		return content;
