@@ -164,9 +164,10 @@ $(document).ready(function () {
 		msg = JSON.parse(event.data)
 		
 		if(msg.type && msg.type == "stock"){
-			//주가 보는 화면 갱신
+			msg.message
 		}else if(msg.type && msg.type == "noti"){
 			//알림창 갱신
+			alert("노티피케이션 발생!")
 		}
 		
         const message = document.getElementById("messages");

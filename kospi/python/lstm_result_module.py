@@ -6,6 +6,10 @@ import keras
 from datetime import date
 from sklearn.preprocessing import MinMaxScaler
 
+print(__name__)
+#현재 파일에서 실행되면 __main__
+#다른 파일에서 임포트하면 lstm_result_module
+
 #매일 오후 4시반에 lstm 모델을 이용해 다음날 코스피 지수를 예측하는 함수
 def job():
     #모델 로드해서 결과치 뽑아내기
@@ -53,7 +57,7 @@ def job():
     cursor.execute(sql, ("내일 주가 알림", f"내일 코스피 지수는 약 {result} 입니다."))
     conn.commit()
 
-schedule.every().day.at("17:01").do(job)
+schedule.every().day.at("17:13").do(job)
 
 while True:
     schedule.run_pending()
