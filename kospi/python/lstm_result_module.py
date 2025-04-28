@@ -53,8 +53,7 @@ def job():
     cursor.execute(sql, ("내일 주가 알림", f"내일 코스피 지수는 약 {result} 입니다."))
     conn.commit()
 
-schedule.every().day.at("16:58").do(job)
-schedule.every().day.at("16:59").do(exit)
+schedule.every().day.at("17:01").do(job)
 
 while True:
     schedule.run_pending()
