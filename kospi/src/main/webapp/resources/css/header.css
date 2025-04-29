@@ -85,6 +85,25 @@ header ul li:hover, #login-btn:hover, #logout-btn:hover{
     top: 50%;
     transform: translate(-50%, -50%);
 }
+.modal-info {
+	background: #17171c;
+    padding: 50px;
+    border-radius: 10px;
+    width: 350px;
+    text-align: center;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    text-align: left;
+}
+#info {
+	margin: 20px 0;
+	
+}
+.modal-info p {
+	margin: 7px 0;
+}
 .close {
     position: absolute;
     top: 10px;

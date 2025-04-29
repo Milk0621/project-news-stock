@@ -40,11 +40,11 @@
 				<img src="./resources/img/chat.png">
 				<img src="./resources/img/chat_hover.png">
 			</div>
-			<div class="img-box">
+			<div class="img-box" id="alarm">
 				<img src="./resources/img/alram.png">
 				<img src="./resources/img/alram_hover.png">
 			</div>
-			<div class="img-box">
+			<div class="img-box" id="info-icon">
 				<img src="./resources/img/user.png">
 				<img src="./resources/img/user_hover.png">
 			</div>
@@ -98,6 +98,19 @@
 			</div>
 		</div>
 	</div>
+	<div id="mypage" class="modal">
+		<div class="modal-info">
+			<span class="close">&times;</span>
+			<h2>내정보</h2>
+			<div id="info">
+				<p>아이디 : hong1234</p>
+				<p>이름 : 홍길동</p>
+				<p>닉네임 : hgd</p>
+				<p>이메일 : hong@example.com</p>
+			</div>
+			<a href="">회원 탈퇴</a>
+		</div>
+	</div>
 </header>
 </body>
 <script type="text/javascript">
@@ -111,6 +124,7 @@ $(document).ready(function () {
     $(".close").on("click", function () {
         $(".modal").fadeOut();
         $("#chat").fadeOut();
+   		$("#mypage").fadeOut();
     });
 
 
@@ -119,8 +133,11 @@ $(document).ready(function () {
         if ($(event.target).is("#login-modal")) {
             $("#login-modal").fadeOut();
         }
-        if ($(event.target).is("#join-modal")) {
+        else if ($(event.target).is("#join-modal")) {
             $("#join-modal").fadeOut();
+        }
+        else if ($(event.target).is("#mypage")) {
+            $("#mypage").fadeOut();
         }
     });
 
@@ -139,6 +156,11 @@ $(document).ready(function () {
     //채팅 모달 띄우기
     $("#chat-icon").on("click", function () {
 		$("#chat").fadeIn();
+    })
+	
+    //개인 정보 모달 띄우기
+    $("#info-icon").on("click", function () {
+		$("#mypage").fadeIn();
     });
     
     
@@ -173,7 +195,7 @@ $(document).ready(function () {
         const message = document.getElementById("messages");
         message.innerHTML += "<div style='text-align:left'>"+msg.message+"</div>"
     };
-    
+	//실시간 채팅
     function sendMessage(){
 		const messageBox = document.getElementById("messageInput");
 		
