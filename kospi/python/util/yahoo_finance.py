@@ -1,22 +1,24 @@
 import yfinance as yf
 import pandas as pd
 from zoneinfo import ZoneInfo
-import keras
+# import keras
 from sklearn.preprocessing import MinMaxScaler
 from datetime import date, timedelta
 
-# #과거 주가지수
-# ticker = "^KS11"
-# # start = "2025-04-01"
-# # end = "2025-04-14"
-# cospi = yf.download(ticker, period="730d", interval="60M")
-# cospi["date"] = cospi.index
+#과거 주가지수
+ticker = "^KS11"
+start = "2025-04-29"
+end = "2025-04-29"
+cospi = yf.download(ticker, interval="1M")
+cospi["date"] = cospi.index
 
 # past = pd.read_csv("./datas/training/kospi.csv")
 
 # cospi.columns = cospi.columns.get_level_values(0)
 
 # cospi = pd.concat([past, cospi], axis=0)
+
+print(cospi)
 
 # cospi.to_csv("./datas/training/kospi(60m).csv", index=False)
 
@@ -59,6 +61,5 @@ def LSTM():
     prediction = pd.DataFrame(df)
     #저장
     
-LSTM()
 #스케줄러
 

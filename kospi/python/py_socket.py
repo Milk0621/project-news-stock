@@ -4,6 +4,7 @@ import json
 import pymysql
 #import lstm_result_module
 import datetime
+from util.kiwoom import fn_ka20001, fn_au10001
 #pip install websockets
 # 연결된 클라이언트 목록
 connected_clients = set()
@@ -27,6 +28,46 @@ async def handler(websocket):
         print("클라이언트 연결 종료")
     finally:
         connected_clients.remove(websocket)
+        
+last_date = "090020"
+async def test():
+    ws_app = await websockets.connect("wss://api.kiwoom.com:10000/api/dostk/websocket")
+    param = {
+        'trnm': 'LOGIN',
+        'token': fn_au10001()
+    }
+    await ws_app.send(message=json.dumps(param))
+    while True:
+        response = json.loads(await ws_app.recv())
+        if response.get('trnm') == 'LOGIN':
+            if response.get('return_code') != 0:
+                print('로그인 실패하였습니다. : ', response.get('return_msg'))
+                await ws_app.close()
+            else:
+                print('로그인 성공하였습니다.')
+                data = {
+                    'trnm': 'REG', # 서비스명
+                    'grp_no': '1', # 그룹번호
+                    'refresh': '1', # 기존등록유지여부
+                    'data': [{ # 실시간 등록 리스트
+                        'item': ['001'], # 실시간 등록 요소
+                        'type': ['0J'], # 실시간 항목
+                    }]
+                }
+                await ws_app.send(message=json.dumps(data))
+        elif response.get('trnm') == 'PING':
+            await ws_app.send(json.dumps(response))
+
+        if response.get('trnm') == 'REAL':
+            print(f'실시간 시세 서버 응답 수신: {response}')
+            if last_date != response["data"][0]["values"]["20"]:
+                last_date = response["data"][0]["values"]["20"]
+                #인서트
+            else:
+                pass        
+                
+        await asyncio.sleep(1)
+        
 async def broadcast():
     while True:
         await asyncio.sleep(5)
@@ -107,8 +148,20 @@ async def broadcast():
                 await connection.send(message)
 
         # print("알림발송 완료")
-
+        
         #yfinance 주가 받아오는 코드 호출
+        # 1. 토큰 설정
+        MY_ACCESS_TOKEN = 'xRFWRkLY2hU_TB4sGBhbGICuIYFzdz65TZgW4yqeQp_xWLKyeMUSlLZyPE-bWEJTVEVJmpTRUvniuLV3OQZesg'# 접근토큰
+
+        # 2. 요청 데이터
+        params = {
+            'mrkt_tp': '0', # 시장구분 0:코스피, 1:코스닥, 2:코스피200
+            'inds_cd': '001', # 업종코드 001:종합(KOSPI), 002:대형주, 003:중형주, 004:소형주 101:종합(KOSDAQ), 201:KOSPI200, 302:KOSTAR, 701: KRX100 나머지 ※ 업종코드 참고
+        }
+
+        # 3. API 실행
+        #fn_ka20001(token=MY_ACCESS_TOKEN, data=params)
+        #print()
         for connection in connected_clients:
             message = {
                 "user" : "server",
@@ -132,6 +185,7 @@ async def broadcast():
 
 async def main():
     asyncio.create_task(broadcast())
+    asyncio.create_task(test())
     async with websockets.serve(handler, "localhost", 8765) as server :
         await server.serve_forever()
 

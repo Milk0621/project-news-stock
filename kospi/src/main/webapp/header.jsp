@@ -164,10 +164,10 @@ $(document).ready(function () {
 		msg = JSON.parse(event.data)
 		
 		if(msg.type && msg.type == "stock"){
-			msg.message
+			console.log(msg.message.price)
 		}else if(msg.type && msg.type == "noti"){
 			//알림창 갱신
-			alert("노티피케이션 발생!")
+			console.log(msg.message)
 		}
 		
         const message = document.getElementById("messages");
