@@ -6,7 +6,7 @@
 <%@ include file="header.jsp" %>
 <%
 	NewsDAO dao = new NewsDAO();
-	List<NewsVO> list = dao.news_list();
+	List<NewsVO> list = dao.newsList();
 %>
 <!DOCTYPE html>
 <html>
