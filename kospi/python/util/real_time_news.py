@@ -312,13 +312,15 @@ def fun(news):
     conn.close()
 
 
-#매일경제, 이데일리, 아시아경제, 한국경제, 머니투데이
-#스케줄러
-schedule.every(15).minutes.at(":00").do(fun, "이데일리")
-schedule.every(15).minutes.at(":03").do(fun, "아시아경제")
-schedule.every(15).minutes.at(":06").do(fun, "한국경제")
-schedule.every(15).minutes.at(":09").do(fun, "매일경제")
-schedule.every(15).minutes.at(":12").do(fun, "머니투데이")
-while True:
-    schedule.run_pending()
-    time.sleep(2)
+fun("이데일리")
+
+# #매일경제, 이데일리, 아시아경제, 한국경제, 머니투데이
+# #스케줄러
+# schedule.every(15).minutes.at(":00").do(fun, "이데일리")
+# schedule.every(15).minutes.at(":03").do(fun, "아시아경제")
+# schedule.every(15).minutes.at(":06").do(fun, "한국경제")
+# schedule.every(15).minutes.at(":09").do(fun, "매일경제")
+# schedule.every(15).minutes.at(":12").do(fun, "머니투데이")
+# while True:
+#     schedule.run_pending()
+#     time.sleep(2)

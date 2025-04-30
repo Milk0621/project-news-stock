@@ -3,7 +3,7 @@ import websockets
 import json
 import pymysql
 #import lstm_result_module
-import datetime
+from datetime import datetime
 from util.kiwoom import fn_ka20001, fn_au10001
 #pip install websockets
 # 연결된 클라이언트 목록
@@ -71,11 +71,14 @@ async def test():
             time = response['data'][0]['values']['20']
             price = response['data'][0]['values']['10']
 
+            today = datetime.now()
+            ymd = today.strftime("%Y-%m-%d")
             hour = time[:2]
             minute = time[2:4]
             second = time[4:]
 
-            time = f"{hour}:{minute}:{second}"
+            date_string = f"{ymd} {hour}:{minute}:{second}"
+            date = datetime.strptime(date_string, "%Y-%m-%d %H:%M:%S")
             price = price[1:]
             
 
@@ -83,7 +86,7 @@ async def test():
             (
                 select date from chart where date = %s
             )"""
-            cursor.execute(insert_query, (time, price, time))
+            cursor.execute(insert_query, (date, price, date))
             conn.commit()
                 
         await asyncio.sleep(1)
@@ -112,7 +115,7 @@ async def broadcast():
         cursor = conn.cursor(pymysql.cursors.DictCursor)
         #{'no': 7, 'title': '내일 주가 알림', 'content': '내일 코스피 지수는 약 2542.011962890625 입니다.', 'flag': 0}
         sql = "select * from finance_notification where flag = 0"
-        print("flag=0 조회 완료")
+        # print("flag=0 조회 완료")
         cursor.execute(sql)
 
         result = cursor.fetchone()
