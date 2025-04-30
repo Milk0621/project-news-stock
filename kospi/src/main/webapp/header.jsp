@@ -1,3 +1,4 @@
+<%@page import="chat.ChatDAO"%>
 <%@ page import="user.UserVO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
@@ -94,12 +95,12 @@
 			</div>
 			<div class="masg-input">
 				<input type="text" id="messageInput" placeholder="메시지 입력">
-	    		<button onclick="sendMessage()">전송</button>
+	    		<button id="sendMessage">전송</button>
 			</div>
 		</div>
 	</div>
 	<div id="mypage" class="modal">
-		<div class="modal-info">
+		<div class="modal-info" onclick="t()">
 			<span class="close">&times;</span>
 			<h2>내정보</h2>
 			<div id="info">
@@ -167,6 +168,8 @@ $(document).ready(function () {
     //챗
     let uuid = crypto.randomUUID();
 	console.log(uuid)
+	let userId = "<%= user != null ? user.getId() : "" %>";
+	let sendMessage = $("#sendMessage");
 	
 	const socket = new WebSocket("ws://localhost:8765/chat");
 	console.log("?????")
@@ -193,11 +196,12 @@ $(document).ready(function () {
 		}
 		
         const message = document.getElementById("messages");
-        message.innerHTML += "<div style='text-align:left'>"+msg.message+"</div>"
+        message.innerHTML += "<div style='text-align:left'>"+msg.message+"</div>";
     };
 	//실시간 채팅
-    function sendMessage(){
+	sendMessage?.click(function(){
 		const messageBox = document.getElementById("messageInput");
+		let chat = $("#messageInput");
 		
 		let msg = {
 			user : uuid,
@@ -207,8 +211,24 @@ $(document).ready(function () {
 		socket.send(JSON.stringify(msg));
 		
 		const message = document.getElementById("messages");
-        message.innerHTML += "<div style='text-align:right'>"+messageBox.value+"</div>"
-	};
+	       message.innerHTML += "<div style='text-align:right'>"+messageBox.value+"</div>"
+		
+	    $.ajax({
+			url : "./ok/chatok.jsp",
+			type : "post",
+			data : {
+				id : userId,
+				chat : chat.val()
+			},
+			success : function(result){
+				console.log(result);
+			},
+			error : function(){
+				console.log("에러 발생");
+			}
+	    	
+	    });
+	});
 });
 
 

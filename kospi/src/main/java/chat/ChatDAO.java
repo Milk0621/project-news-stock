@@ -17,7 +17,7 @@ public class ChatDAO extends DBManager{
 		DBConnect();
 		
 		String sql = "insert into chat(id, content) ";
-		sql += "valuse('"+id+"', '"+content+"')";
+		sql += "values('"+id+"', '"+content+"')";
 		executeUpdate(sql);
 		
 		DBDisConnect();
