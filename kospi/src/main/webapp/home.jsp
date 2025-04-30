@@ -26,11 +26,13 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 
+let chart;  // 전역 선언
+let lastMinute = "";  // 실시간 비교용 변수
+
 let chartData = <%= jsonText %>
 console.log(chartData)
 const date = chartData.map(x => x.date);
-const price = chartData.map(x => x.price);
-
+const price = chartData.map(x => Number(x.price)); // 숫자형으로 변환
 
 const ctx = document.getElementById("chart").getContext('2d');
 chart = new Chart(ctx, {
@@ -67,7 +69,6 @@ async function getToken(){
 	return result
 }
 
-
 const socket = new WebSocket("wss://api.kiwoom.com:10000/api/dostk/websocket");
 console.log("?????")
 socket.onopen = async () => {
@@ -83,9 +84,6 @@ socket.onopen = async () => {
     
     socket.send(JSON.stringify(loginData))
 };
-
-let chart = null;
-let lastMinute = null;
 
 socket.onmessage = (event) => {
 	//console.log(event.data)
@@ -115,39 +113,27 @@ socket.onmessage = (event) => {
 	if(data.trnm == "REAL"){
 		const prices = data.data[0].values["10"]
 		const times = data.data[0].values["20"]
-		price = prices.replace(/^[-+]/, "");
+		
+		const price = Number(prices.replace(/^[-+]/, "")); // 문자열 제거하고 숫자 변환
 		time = String(Math.floor(times / 100));
 		minute = time.slice(0, 4);
 		
-		if (minute !== lastMinute){
+		if (minute !== lastMinute) {
 			lastMinute = minute;
-			console.log(minute)
-			console.log(lastMinute)
-			const ctx = document.getElementById("chart").getContext('2d');
-			if(!chart){
-				chart = new Chart(ctx, {
-					type : "line",
-					data : {
-						labels : [time],
-						datasets : [{
-							responsive:false,
-							label : "실시간 종가",
-							data : [price],
-							borderWidth : 2
-						}]
-					}
-				})
-			}else{
-				chart.data.labels.push(time);
-				chart.data.datasets[0].data.push(price);
-				
-				if (chart.data.labels.length > 30) {
-	              chart.data.labels.shift();
-	              chart.data.datasets[0].data.shift();
-	            }
-				chart.update();
+
+			console.log("실시간:", minute, price);
+
+			chart.data.labels.push(time);
+			chart.data.datasets[0].data.push(price);
+
+			if (chart.data.labels.length > 30) {
+				chart.data.labels.shift();
+				chart.data.datasets[0].data.shift();
 			}
+
+			chart.update();
 		}
+		
 	}
 };
 </script>

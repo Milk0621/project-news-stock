@@ -19,7 +19,10 @@ public class ChartDAO extends DBManager{
 		
 		//만약 다음날 새벽 12 ~ 9시사이면 현재날짜는 전날 15:30
 		
-		String sql = "select * from chart order by date asc limit 10";
+		String sql = "select date_format(c1.date, '%Y-%m-%d %H:%i') as date, c1.price from chart c1 ";
+		sql += "join(select date_format(date, '%Y-%m-%d %H:%i') as minute, ";
+		sql += "max(date) as max_date from chart group by minute) ";
+		sql += "c2 on c1.date = c2.max_date order by c1.date asc";
 		//limit 필요
 		executeQuery(sql);
 		
