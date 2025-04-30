@@ -14,6 +14,10 @@ from datetime import date
 import re
 import subprocess
 from pymysql.converters import escape_string
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+from ML.kobert_finance import kobert_keyword
 
 chrome_browser = subprocess.Popen(r'C:\Program Files\Google\Chrome\Application\chrome.exe --remote-debugging-port=9222 --user-data-dir="C:\chromeCookie"')
 
@@ -102,6 +106,13 @@ def fun(news):
             driver.close()
             driver.switch_to.window(driver.window_handles[0])
             
+            insert_query = """insert into news(name, title, link, content, img, date) select %s, %s, %s, %s, %s, %s from dual where not exists
+            (
+                select name, title from news where name = %s and title = %s
+            )"""
+            cursor.execute(insert_query, (news, dict["title"], dict["link"], dict["content"], dict["img"], ymd, news, dict["title"]))
+            conn.commit()
+            
     elif news == "아시아경제":
         for i, box in enumerate(boxs):
             link = box.find_elements(By.XPATH, "./div")[1].find_element(By.TAG_NAME, "a").get_attribute("href")
@@ -175,21 +186,24 @@ def fun(news):
             driver.close()
             driver.switch_to.window(driver.window_handles[0])
             
+            senti_result, keyword = kobert_keyword(con_text)
+            
             dict = {
                 "name" : news,
                 "title" : title.strip(),
                 "link" : link.strip(),
                 "content" : con_text.strip(),
                 "img" : img.strip(),
-                "date" : ymd
+                "date" : ymd,
+                "senti_result" : senti_result
             }
             news_data.append(dict)
             print(dict)
-            insert_query = """insert into news(name, title, link, content, img, date) select %s, %s, %s, %s, %s, %s from dual where not exists
+            insert_query = """insert into news(name, title, link, content, img, date, senti_result) select %s, %s, %s, %s, %s, %s, %s from dual where not exists
             (
                 select name, title from news where name = %s and title = %s
             )"""
-            cursor.execute(insert_query, (news, dict["title"], dict["link"], dict["content"], dict["img"], ymd, news, dict["title"]))
+            cursor.execute(insert_query, (news, dict["title"], dict["link"], dict["content"], dict["img"], ymd, dict["senti_result"], news, dict["title"]))
             if cursor.lastrowid > 0:
                 #뉴스가 인서트됨
                 #키워드 테이블에 인서트
@@ -249,6 +263,8 @@ def fun(news):
             )"""
             cursor.execute(insert_query, (news, dict["title"], dict["link"], dict["content"], dict["img"], ymd, news, dict["title"]))
             conn.commit()
+            
+            
             
     elif news == "머니투데이":
         for i, box in enumerate(boxs):
@@ -312,7 +328,7 @@ def fun(news):
     conn.close()
 
 
-fun("이데일리")
+fun("매일경제")
 
 # #매일경제, 이데일리, 아시아경제, 한국경제, 머니투데이
 # #스케줄러

@@ -1,3 +1,5 @@
+<%@page import="chat.ChatVO"%>
+<%@page import="java.util.List"%>
 <%@page import="chat.ChatDAO"%>
 <%@ page import="user.UserVO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -5,6 +7,9 @@
 <%
 	UserVO user = (UserVO)session.getAttribute("user");
 	//String user = "";
+	
+	ChatDAO cdao = new ChatDAO();
+	List<ChatVO> list = cdao.chatList();
 %>
 <!DOCTYPE html>
 <html>
@@ -90,8 +95,11 @@
 			<span class="close">&times;</span>
 			<h2>채팅</h2>
 			<div id="messages">
-				<div style="text-align:left">안녕</div>
-				<div style="text-align:right">반가워</div>
+				<% for(int i = 0; i < list.size(); i++){ 
+					ChatVO vo = list.get(i);
+				%>
+					<div><%=vo.getContent() %></div>
+				<%} %>
 			</div>
 			<div class="masg-input">
 				<input type="text" id="messageInput" placeholder="메시지 입력">
@@ -168,7 +176,7 @@ $(document).ready(function () {
     //챗
     let uuid = crypto.randomUUID();
 	console.log(uuid)
-	let userId = "<%= user != null ? user.getId() : "" %>";
+	let userId = '<%= user != null ? user.getId() : "" %>';
 	let sendMessage = $("#sendMessage");
 	
 	const socket = new WebSocket("ws://localhost:8765/chat");

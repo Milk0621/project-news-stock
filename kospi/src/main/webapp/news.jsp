@@ -6,7 +6,7 @@
 <%@ include file="header.jsp" %>
 <%
 	NewsDAO dao = new NewsDAO();
-	List<NewsVO> list = dao.newsList();
+	List<NewsVO> nlist = dao.newsList();
 %>
 <!DOCTYPE html>
 <html>
@@ -30,7 +30,7 @@
 				</div>
 				<div class="sub_news">
 				<% for(int i = 0; i < 4; i++){ 
-					NewsVO vo = list.get(i);
+					NewsVO vo = nlist.get(i);
 				%>
 					<div>
 						<div class="txt">
@@ -63,7 +63,7 @@
 				    <button data-name="머니투데이">머니투데이</button>
 				</div>
 				<% for(int i = 0; i < list.size(); i++){ 
-					NewsVO vo = list.get(i);
+					NewsVO vo = nlist.get(i);
 				%>
 					<div class="content" data-name="<%=vo.getName()%>" onclick="location.href='post.jsp?no=<%=vo.getNo()%>'">
 				        <div class="content_img">
