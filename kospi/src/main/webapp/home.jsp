@@ -1,6 +1,16 @@
+<%@page import="com.fasterxml.jackson.databind.ObjectMapper"%>
+<%@page import="java.util.List"%>
+<%@page import="chart.ChartVO"%>
+<%@page import="chart.ChartDAO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ include file = "header.jsp" %>
+<%
+	ChartDAO dao = new ChartDAO();
+	List<ChartVO> list = dao.chart();
+	ObjectMapper mapper = new ObjectMapper();
+	String jsonText = mapper.writeValueAsString(list);
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,6 +25,27 @@
 </body>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+
+let chartData = <%= jsonText %>
+console.log(chartData)
+const date = chartData.map(x => x.date);
+const price = chartData.map(x => x.price);
+
+
+const ctx = document.getElementById("chart").getContext('2d');
+chart = new Chart(ctx, {
+	type : "line",
+	data : {
+		labels : date,
+		datasets : [{
+			responsive:false,
+			label : "실시간 종가",
+			data : price,
+			borderWidth : 2
+		}]
+	}
+})
+
 async function getToken(){	
 	const keyRes = await fetch("http://localhost:5000/api/keys");
 	const keyData = await keyRes.json();

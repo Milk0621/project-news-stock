@@ -21,6 +21,7 @@ async def handler(websocket):
             json_message = json.loads(message)
             print(json_message["user"])
             
+            print(message)
             for connection in connected_clients:
                 if connection is not websocket:
                     await connection.send(message)
@@ -29,7 +30,6 @@ async def handler(websocket):
     finally:
         connected_clients.remove(websocket)
         
-last_date = "090020"
 async def test():
     ws_app = await websockets.connect("wss://api.kiwoom.com:10000/api/dostk/websocket")
     param = {
@@ -59,12 +59,32 @@ async def test():
             await ws_app.send(json.dumps(response))
 
         if response.get('trnm') == 'REAL':
-            print(f'실시간 시세 서버 응답 수신: {response}')
-            if last_date != response["data"][0]["values"]["20"]:
-                last_date = response["data"][0]["values"]["20"]
-                #인서트
-            else:
-                pass        
+            print(f"결과아아아아아 {response}")
+            conn = pymysql.connect(
+            host="158.247.211.92",
+            user="milk",
+            password="0621",
+            database="kospi"
+            )
+            cursor = conn.cursor()
+
+            time = response['data'][0]['values']['20']
+            price = response['data'][0]['values']['10']
+
+            hour = time[:2]
+            minute = time[2:4]
+            second = time[4:]
+
+            time = f"{hour}:{minute}:{second}"
+            price = price[1:]
+            
+
+            insert_query = """insert into chart(date, price) select %s, %s from dual where not exists
+            (
+                select date from chart where date = %s
+            )"""
+            cursor.execute(insert_query, (time, price, time))
+            conn.commit()
                 
         await asyncio.sleep(1)
         
@@ -77,7 +97,6 @@ async def broadcast():
         #2-3 만약 false가 있으면 알림발송 후, true로 업데이트
         
         #lstm_result_module.job()
-        print("분석완료!")
 
         conn = pymysql.connect(
             host="158.247.211.92",
@@ -97,20 +116,16 @@ async def broadcast():
         cursor.execute(sql)
 
         result = cursor.fetchone()
-        print(result)
         if result :
-            print("결과 있음")
             title = result["title"]
             content = result["content"]
             #매일 오후 4시반에 인서트되는 내일 코스피 지수 예측 데이터 결과값 조회
             
             sql = "select id from user where user_type != 99"
-            print("회원 조회 완료")
             cursor.execute(sql)
             ids = list(map(lambda x : x["id"] ,cursor.fetchall()))
             #[{'id': 'hong'}]
             #[{'id': 'hong'}, {"id" : "jeon"}]
-            print(ids)
             title = [title] * len(ids)
             #["내일 주가 알림"]
             
@@ -124,7 +139,6 @@ async def broadcast():
             data = list(zip(ids, title, content, ymd))
             #[('hong', '내일 주가 알림', '내일 코스피 지수는 약 2542.011962890625 입니다.', '2025-04-28')]
             
-            print(ymd)
             #ids가 20명 -> 20개
             #유저테이블에있는 모든 유저의 아이디 조회
 
@@ -136,7 +150,6 @@ async def broadcast():
             sql = "update finance_notification set flag = 1"
             cursor.execute(sql)
             conn.commit()
-            print("flag 1로 업데이트 완료")
             
             for connection in connected_clients:
                 message = {
@@ -148,28 +161,18 @@ async def broadcast():
                 await connection.send(message)
 
         # print("알림발송 완료")
-        
-        #yfinance 주가 받아오는 코드 호출
-        # 1. 토큰 설정
-        MY_ACCESS_TOKEN = 'xRFWRkLY2hU_TB4sGBhbGICuIYFzdz65TZgW4yqeQp_xWLKyeMUSlLZyPE-bWEJTVEVJmpTRUvniuLV3OQZesg'# 접근토큰
-
-        # 2. 요청 데이터
-        params = {
-            'mrkt_tp': '0', # 시장구분 0:코스피, 1:코스닥, 2:코스피200
-            'inds_cd': '001', # 업종코드 001:종합(KOSPI), 002:대형주, 003:중형주, 004:소형주 101:종합(KOSDAQ), 201:KOSPI200, 302:KOSTAR, 701: KRX100 나머지 ※ 업종코드 참고
-        }
 
         # 3. API 실행
         #fn_ka20001(token=MY_ACCESS_TOKEN, data=params)
         #print()
-        for connection in connected_clients:
-            message = {
-                "user" : "server",
-                "type" : "stock",
-                "message" : result["title"]
-            }
-            message =  json.dumps(message)
-            await connection.send(message)
+        # for connection in connected_clients:
+        #     message = {
+        #         "user" : "server",
+        #         "type" : "stock",
+        #         "message" : result["title"]
+        #     }
+        #     message =  json.dumps(message)
+        #     await connection.send(message)
 
 
         # await asyncio.sleep(10)  # 주기적 방송

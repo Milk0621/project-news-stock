@@ -13,7 +13,13 @@ public class ChartDAO extends DBManager{
 		driverLoad();
 		DBConnect();
 		
-		String sql = "select * from chart order by date desc";
+		//String date = "2025-04-30-10:33";
+		//자바로 현재 날짜 시간 구해오기 datetime
+		//현재 날짜 시간이 15:30분이 넘었으면 15:30분으로 고정 
+		
+		//만약 다음날 새벽 12 ~ 9시사이면 현재날짜는 전날 15:30
+		
+		String sql = "select * from chart order by date asc limit 10";
 		//limit 필요
 		executeQuery(sql);
 		
