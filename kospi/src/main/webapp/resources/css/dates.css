@@ -1,0 +1,32 @@
+@charset "UTF-8";
+.graph {
+	width: 80%;
+	height: 450px;
+	background-color: #fff;
+	margin: 0 auto;
+	margin-bottom: 40px;
+}
+.datas table{
+	width: 100%;
+	text-align: center;
+	border-spacing: 0px;
+    border-style: none;
+    padding: 0px;
+}
+th {
+	font-size: 1.2rem;
+	color: #000;
+}
+.labels{
+	height: 40px;
+	background-color: #9e9ea4;
+}
+.data:nth-child(even){
+	background: #2c2c35;
+}
+.data td{
+	height: 30px;
+}
+.margin{
+	height: 10px;
+}
