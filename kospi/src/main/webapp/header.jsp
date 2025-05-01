@@ -10,6 +10,7 @@
 	
 	ChatDAO cdao = new ChatDAO();
 	List<ChatVO> list = cdao.chatList();
+	
 %>
 <!DOCTYPE html>
 <html>
