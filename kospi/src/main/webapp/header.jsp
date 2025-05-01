@@ -98,10 +98,14 @@
 				<% for(int i = 0; i < list.size(); i++){ 
 					ChatVO vo = list.get(i);
 				%>
-					<div><%=vo.getContent() %></div>
+					<div class="msg-con">
+						<p><%=vo.getContent() %></p>
+						<span><%=vo.getId() %></span>
+						<span><%=vo.getCreate_date() %></span>
+					</div>
 				<%} %>
 			</div>
-			<div class="masg-input">
+			<div class="msg-input">
 				<input type="text" id="messageInput" placeholder="메시지 입력">
 	    		<button id="sendMessage">전송</button>
 			</div>
@@ -124,6 +128,7 @@
 </body>
 <script type="text/javascript">
 $(document).ready(function () {
+	
     // 로그인 버튼 클릭
     $("#login-btn").on("click", function () {
         $("#login-modal").fadeIn();
@@ -171,8 +176,15 @@ $(document).ready(function () {
     $("#info-icon").on("click", function () {
 		$("#mypage").fadeIn();
     });
-    
-    
+	
+    //날짜
+    function getCurrentDateTime() {
+        const now = new Date();
+        const date = now.toISOString().split('T')[0];
+        const time = now.toTimeString().split(' ')[0];
+        return { date, time };
+    }
+
     //챗
     let uuid = crypto.randomUUID();
 	console.log(uuid)
@@ -194,7 +206,8 @@ $(document).ready(function () {
 	socket.onmessage = (event) => {
 		console.log(event)
         console.log("수신:", event.data);
-		msg = JSON.parse(event.data)
+		const msg = JSON.parse(event.data);
+		console.log("수신 메시지:", msg);
 		
 		if(msg.type && msg.type == "stock"){
 			console.log(msg.message.price)
@@ -204,7 +217,17 @@ $(document).ready(function () {
 		}
 		
         const message = document.getElementById("messages");
-        message.innerHTML += "<div style='text-align:left'>"+msg.message+"</div>";
+        //const sender = msg.user || userId;
+        const { date, time } = getCurrentDateTime();
+        const con = `
+            <div class="msg-con">
+                <p>${msg.message}</p>
+                <span>${userId}</span>
+                <span>${date} ${time}</span>
+            </div>
+        `;
+        message.insertAdjacentHTML('beforeend', con);
+        message.scrollTop = message.scrollHeight;
     };
 	//실시간 채팅
 	sendMessage?.click(function(){
@@ -212,21 +235,33 @@ $(document).ready(function () {
 		let chat = $("#messageInput");
 		
 		let msg = {
-			user : uuid,
+			user : userId,
 			message : messageBox.value
 		}
 		//"{user : uuid, message : hi}"
 		socket.send(JSON.stringify(msg));
 		
 		const message = document.getElementById("messages");
-	       message.innerHTML += "<div style='text-align:right'>"+messageBox.value+"</div>"
+		const { date, time } = getCurrentDateTime();
+		const conRight = `
+            <div class="msg-con right">
+                <p>${msg.message}</p>
+                <span>${userId}</span>
+                <span>${date} ${time}</span>
+            </div>
+        `;
+        message.insertAdjacentHTML('beforeend', conRight);
+		message.scrollTop = message.scrollHeight;
+
+        message.offsetHeight;
+        messageBox.value = "";
 		
 	    $.ajax({
 			url : "./ok/chatok.jsp",
 			type : "post",
 			data : {
 				id : userId,
-				chat : chat.val()
+				chat : msg.message
 			},
 			success : function(result){
 				console.log(result);

@@ -23,6 +23,10 @@ li {
 	display: inline-block;
 	list-style: none;
 }
+header {
+	z-index: 1010;
+	position: relative;
+}
 .wrap {
 	width: 1200px;
 	margin: 0 auto;
@@ -145,18 +149,16 @@ header ul li:hover, #login-btn:hover, #logout-btn:hover{
 #chat{
 	display: none;
     position: fixed;
-    z-index: 1000;
-    right: 25px;
-    bottom: 25px;
-    width: 20%;
-    height: 45%;
-    border-radius: 10px;
-    box-shadow: 4px 4px 10px 1px #000000a8;
+	margin-top: 100px;
+    right: 0;
+    bottom: 0;
+    width: 35%;
+    height: 100%;
 }
 .modal-chat{
 	background: #2c2c35;
     padding: 30px;
-    border-radius: 10px;
+    margin-top:100px;
     width: 100%;
     height: 100%;
     text-align: center;
@@ -167,26 +169,41 @@ header ul li:hover, #login-btn:hover, #logout-btn:hover{
 }
 .modal-chat h2{
 	font-size: 1.2rem;
-	margin-bottom: 10px;
+	margin-bottom: 20px;
 }
 #messages {
 	width: 100%;
-	height: 80%;
-	background-color: #fff;
+	height: 75%;
 	margin: 0 auto;
 	padding: 15px;
+	overflow-y: auto;
+	scroll-behavior: smooth;
 }
-.masg-input{
-	margin-top: 5px;
+.msg-con {
+	text-align: left;
+	padding: 15px 0;
+    border-bottom: 1px solid #fff;
+}
+.right {
+	text-align: right;
+}
+.msg-con p{
+	font-size: 1.1rem;
+	color: #fff;
+}
+.msg-con span{
+	font-size: 0.8rem;
+}
+.msg-input{
+	margin-top: 15px;
 	display: flex;
     justify-content: space-between;
 }
-.masg-input>input[type="text"]{
-	width: 100%;
+#messageInput{
+	width: 90%;
     height: 40px;
     border: none;
     padding-left: 10px;
-    margin-bottom: 5px;
 }
 .masg-input>button{
 	width: 70px;
