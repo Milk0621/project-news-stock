@@ -207,6 +207,9 @@ def fun(news):
             if cursor.lastrowid > 0:
                 #뉴스가 인서트됨
                 #키워드 테이블에 인서트
+                keyword_insert = """
+                    
+                """
                 pass
             else:
                 #뉴스가 중복되어서 인서트 안함
