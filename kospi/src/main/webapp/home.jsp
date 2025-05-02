@@ -7,9 +7,9 @@
 <%@ include file = "header.jsp" %>
 <%
 	ChartDAO dao = new ChartDAO();
-	List<ChartVO> list = dao.chart();
+	List<ChartVO> clist = dao.chart();
 	ObjectMapper mapper = new ObjectMapper();
-	String jsonText = mapper.writeValueAsString(list);
+	String jsonText = mapper.writeValueAsString(clist);
 %>
 <!DOCTYPE html>
 <html>
@@ -19,8 +19,17 @@
 <link rel="stylesheet" href="./resources/css/home.css"></link>
 </head>
 <body>
-	<div class="chart-container">
-		<canvas id="chart"></canvas>
+	<div class="wrap">
+		<div class="chart-container">
+			<h2>KOSPI 지수</h2>
+			<canvas id="chart"></canvas>
+		</div>
+		<div class="analyze">
+			<h2>실시간 뉴스 분석</h2>
+			<div>
+				
+			</div>
+		</div>
 	</div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
