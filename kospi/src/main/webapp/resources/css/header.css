@@ -167,7 +167,21 @@ header ul li:hover, #login-btn:hover, #logout-btn:hover{
     top: 50%;
     transform: translate(-50%, -50%);
 }
-.modal-chat h2{
+#alarm{
+	position: fixed;
+	right: -35%;
+	width: 35%;
+	height: 35%;
+	
+}
+.alarm-info{
+	background: #2c2c35;
+	padding: 20px;
+	margin-top: 50%;
+	position: relative;
+	text-align: left;
+}
+.modal-chat h2, .alarm-info h2{
 	font-size: 1.2rem;
 	margin-bottom: 20px;
 }
@@ -184,14 +198,16 @@ header ul li:hover, #login-btn:hover, #logout-btn:hover{
 	padding: 15px 0;
     border-bottom: 1px solid #fff;
 }
-.right {
+.msg-con-right {
 	text-align: right;
+	padding: 15px 0;
+	border-bottom: 1px solid #fff;
 }
-.msg-con p{
+.msg-con p, .msg-con-right p{
 	font-size: 1.1rem;
 	color: #fff;
 }
-.msg-con span{
+.msg-con span, .msg-con-right span{
 	font-size: 0.8rem;
 }
 .msg-input{
@@ -211,4 +227,7 @@ header ul li:hover, #login-btn:hover, #logout-btn:hover{
 	border: none;
 	color: #000;
 	cursor: pointer;
+}
+.alarm-con{
+	border-bottom: 1px solid #fff;
 }

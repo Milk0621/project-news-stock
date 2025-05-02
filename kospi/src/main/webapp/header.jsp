@@ -1,3 +1,5 @@
+<%@page import="alarm.AlarmVO"%>
+<%@page import="alarm.AlarmDAO"%>
 <%@page import="chat.ChatVO"%>
 <%@page import="java.util.List"%>
 <%@page import="chat.ChatDAO"%>
@@ -6,10 +8,13 @@
     pageEncoding="UTF-8"%>
 <%
 	UserVO user = (UserVO)session.getAttribute("user");
-	//String user = "";
-	
+
 	ChatDAO cdao = new ChatDAO();
 	List<ChatVO> list = cdao.chatList();
+	
+	AlarmDAO adao = new AlarmDAO();
+	String userId = user != null ? user.getId() : "";
+	List<AlarmVO> alist = adao.alarmList(userId);
 	
 %>
 <!DOCTYPE html>
@@ -36,18 +41,18 @@
 	<ul class="nav">
 		<li onclick="location.href='home.jsp'">홈</li>
 		<li onclick="location.href='news.jsp'">뉴스</li>
-		<li onclick="location.href='datas.jsp'">날짜별 분석</li>
+		<li onclick="location.href='dates.jsp'">날짜별 분석</li>
 		<li onclick="location.href='model.jsp'">모델 평가</li>
 	</ul>
 	<div class="icon">
 		<% if(user == null){ %>
-		<span id="login-btn">로그인</span>
+			<span id="login-btn">로그인</span>
 		<% }else if(user != null){ %>
 			<div class="img-box" id="chat-icon">
 				<img src="./resources/img/chat.png">
 				<img src="./resources/img/chat_hover.png">
 			</div>
-			<div class="img-box" id="alarm">
+			<div class="img-box" id="alarm-icon">
 				<img src="./resources/img/alram.png">
 				<img src="./resources/img/alram_hover.png">
 			</div>
@@ -91,24 +96,58 @@
 	        </div>
 		</form>
 	</div>
-	<div id="chat">
-		<div class="modal-chat">
-			<span class="close">&times;</span>
-			<h2>채팅</h2>
-			<div id="messages">
-				<% for(int i = 0; i < list.size(); i++){ 
-					ChatVO vo = list.get(i);
-				%>
-					<div class="msg-con">
-						<p><%=vo.getContent() %></p>
-						<span><%=vo.getId() %></span>
-						<span><%=vo.getCreate_date() %></span>
-					</div>
-				<%} %>
+	<% if(user != null){ %>
+		<div id="chat">
+			<div class="modal-chat">
+				<span class="close">&times;</span>
+				<h2>채팅</h2>
+				<div id="messages">
+					<%
+						for(int i = 0; i < list.size(); i++){ 
+							ChatVO vo = list.get(i);
+							if(!vo.getId().equals(userId)){
+					%>
+								<div class="msg-con">
+									<p><%=vo.getContent() %></p>
+									<span><%=vo.getId() %></span>
+									<span><%=vo.getCreate_date() %></span>
+								</div>
+					<%		}else{ %>
+								<div class="msg-con-right">
+									<p><%=vo.getContent() %></p>
+									<span><%=vo.getId() %></span>
+									<span><%=vo.getCreate_date() %></span>
+								</div>
+					<%
+							}
+						} 
+					%>
+				</div>
+				<div class="msg-input">
+					<input type="text" id="messageInput" placeholder="메시지 입력">
+		    		<button id="sendMessageBtn">전송</button>
+				</div>
 			</div>
-			<div class="msg-input">
-				<input type="text" id="messageInput" placeholder="메시지 입력">
-	    		<button id="sendMessage">전송</button>
+		</div>
+	<% } %>
+	<div id="alarm">
+		<div class="alarm-info">
+			<span class="close">&times;</span>
+			<h2>알람</h2>
+			<div id="alarms">
+				<% 
+					for(int i = 0; i < alist.size(); i++){
+						AlarmVO avo = alist.get(i);
+						
+				%>
+						<div class="alarm-con">
+							<p><%= avo.getTitle() %></p>
+							<p><%= avo.getContent() %></p>
+							<p><%= avo.getDate() %></p>
+						</div>
+				<%
+					}
+				%>
 			</div>
 		</div>
 	</div>
@@ -122,16 +161,20 @@
 				<p>닉네임 : hgd</p>
 				<p>이메일 : hong@example.com</p>
 			</div>
-			<a href="">회원 탈퇴</a>
+			<a href="./ok/userDeleteok.jsp">회원 탈퇴</a>
 		</div>
 	</div>
 </header>
 </body>
 <script type="text/javascript">
 $(document).ready(function () {
-
 	const message = document.getElementById("messages");
+	const messageBox = document.getElementById("messageInput");
+	
+	let userId = '<%= user != null ? user.getId() : "" %>';
+	if(userId != ""){
 	message.scrollTop = message.scrollHeight
+	}
 	
     // 로그인 버튼 클릭
     $("#login-btn").on("click", function () {
@@ -142,9 +185,18 @@ $(document).ready(function () {
     $(".close").on("click", function () {
         $(".modal").fadeOut();
         //$("#chat").fadeOut();
-        $("#chat").css("right", "-35%")
+        $("#chat").css("right", "-35%");
+        $("#alarm").css("right", "-35%");
    		$("#mypage").fadeOut();
     });
+    
+    /* function modalFadeOut(elId){
+    	if ($(event.target).is("#"+elId)) {
+            $("#"+elId).fadeOut();
+        }
+	}
+    
+    modalFadeOut("login_modal") */
 
     // 배경 클릭 시 닫기
     $(window).on("click", function (event) {
@@ -174,12 +226,23 @@ $(document).ready(function () {
     //채팅 모달 띄우기
     $("#chat-icon").on("click", function () {
 		//$("#chat").fadeIn();
-    	$("#chat").css("right", 0)
-    })
+    	$("#chat").css("right", 0);
+    });
 	
+    //알림 모달 띄우기
+    $("#alarm-icon").on("click", function () {
+		$("#alarm").css("right", 0);
+    });
+    
     //개인 정보 모달 띄우기
     $("#info-icon").on("click", function () {
 		$("#mypage").fadeIn();
+    });
+    
+    messageBox.addEventListener("keyup",function(key){
+        if(key.keyCode==13) {
+        	sendMessage()
+        }
     });
 	
     //날짜
@@ -193,8 +256,7 @@ $(document).ready(function () {
     //챗
     let uuid = crypto.randomUUID();
 	console.log(uuid)
-	let userId = '<%= user != null ? user.getId() : "" %>';
-	let sendMessage = $("#sendMessage");
+	let sendMessageBtn = $("#sendMessageBtn");
 	
 	const socket = new WebSocket("ws://localhost:8765/chat");
 	console.log("?????")
@@ -218,17 +280,23 @@ $(document).ready(function () {
 			console.log(msg.message.price)
 		}else if(msg.type && msg.type == "noti"){
 			//알림창 갱신
+			for(let i = 0; i < msg.keys.length; i++){
+				if(msg.keys[i].id == "나"){
+					//알림창 표시
+					no = msg.keys[i].key
+				}
+			}
 			console.log(msg.message)
 		}
 		
         const message = document.getElementById("messages");
         //const sender = msg.user || userId;
         const { date, time } = getCurrentDateTime();
-        
     };
-	//실시간 채팅
-	sendMessage?.click(function(){
-		const messageBox = document.getElementById("messageInput");
+    
+    
+   	
+    function sendMessage(){
 		let chat = $("#messageInput");
 		
 		let msg = {
@@ -238,17 +306,7 @@ $(document).ready(function () {
 		//"{user : uuid, message : hi}"
 		socket.send(JSON.stringify(msg));
 		
-		
 		const { date, time } = getCurrentDateTime();
-		/* const con = `
-        <div class="msg-con">
-            <p>${msg.message}</p>
-            <span>${userId}</span>
-            <span>${date} ${time}</span>
-        </div>
-	    `;
-	    message.insertAdjacentHTML('beforeend', con);
-	    message.scrollTop = message.scrollHeight;*/
 		
 	    $.ajax({
 			url : "./ok/chatok.jsp",
@@ -261,7 +319,7 @@ $(document).ready(function () {
 				console.log(result);
 				if (result.trim() == "success"){
 					let html = "";
-					html += "<div class='msg-con'>";
+					html += "<div class='msg-con-right'>";
 					html += 	"<p>"+chat.val()+"</p>";
 					html +=		"<span>"+msg.user+"</span> ";
 					html += "<span>" +date + " " + time + "</span>"
@@ -272,9 +330,16 @@ $(document).ready(function () {
 			},
 			error : function(){
 				console.log("에러 발생");
-			}
-	    	
+			},
+			complete : function(){
+				chat.val("")
+		   }
 	    });
+	}
+    
+	//실시간 채팅
+	sendMessageBtn?.click(function(){
+		sendMessage()
 	});
 });
 

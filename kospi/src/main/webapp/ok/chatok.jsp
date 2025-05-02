@@ -6,10 +6,6 @@
 	String id = request.getParameter("id");
 	String chat = request.getParameter("chat");
 	
-	System.out.println(chat);
-	System.out.println(id);
-	
-	
 	if(id == null || chat == null){
 		out.print("fail");
 		return;
