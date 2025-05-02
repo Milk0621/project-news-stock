@@ -129,6 +129,9 @@
 </body>
 <script type="text/javascript">
 $(document).ready(function () {
+
+	const message = document.getElementById("messages");
+	message.scrollTop = message.scrollHeight
 	
     // 로그인 버튼 클릭
     $("#login-btn").on("click", function () {
@@ -138,10 +141,10 @@ $(document).ready(function () {
     // 모달 닫기
     $(".close").on("click", function () {
         $(".modal").fadeOut();
-        $("#chat").fadeOut();
+        //$("#chat").fadeOut();
+        $("#chat").css("right", "-35%")
    		$("#mypage").fadeOut();
     });
-
 
     // 배경 클릭 시 닫기
     $(window).on("click", function (event) {
@@ -170,7 +173,8 @@ $(document).ready(function () {
     
     //채팅 모달 띄우기
     $("#chat-icon").on("click", function () {
-		$("#chat").fadeIn();
+		//$("#chat").fadeIn();
+    	$("#chat").css("right", 0)
     })
 	
     //개인 정보 모달 띄우기
@@ -220,15 +224,7 @@ $(document).ready(function () {
         const message = document.getElementById("messages");
         //const sender = msg.user || userId;
         const { date, time } = getCurrentDateTime();
-        const con = `
-            <div class="msg-con">
-                <p>${msg.message}</p>
-                <span>${userId}</span>
-                <span>${date} ${time}</span>
-            </div>
-        `;
-        message.insertAdjacentHTML('beforeend', con);
-        message.scrollTop = message.scrollHeight;
+        
     };
 	//실시간 채팅
 	sendMessage?.click(function(){
@@ -242,20 +238,17 @@ $(document).ready(function () {
 		//"{user : uuid, message : hi}"
 		socket.send(JSON.stringify(msg));
 		
-		const message = document.getElementById("messages");
+		
 		const { date, time } = getCurrentDateTime();
-		const conRight = `
-            <div class="msg-con right">
-                <p>${msg.message}</p>
-                <span>${userId}</span>
-                <span>${date} ${time}</span>
-            </div>
-        `;
-        message.insertAdjacentHTML('beforeend', conRight);
-		message.scrollTop = message.scrollHeight;
-
-        message.offsetHeight;
-        messageBox.value = "";
+		/* const con = `
+        <div class="msg-con">
+            <p>${msg.message}</p>
+            <span>${userId}</span>
+            <span>${date} ${time}</span>
+        </div>
+	    `;
+	    message.insertAdjacentHTML('beforeend', con);
+	    message.scrollTop = message.scrollHeight;*/
 		
 	    $.ajax({
 			url : "./ok/chatok.jsp",
@@ -266,6 +259,16 @@ $(document).ready(function () {
 			},
 			success : function(result){
 				console.log(result);
+				if (result.trim() == "success"){
+					let html = "";
+					html += "<div class='msg-con'>";
+					html += 	"<p>"+chat.val()+"</p>";
+					html +=		"<span>"+msg.user+"</span> ";
+					html += "<span>" +date + " " + time + "</span>"
+					html += "</div>";
+					message.innerHTML += html;
+					message.scrollTop = message.scrollHeight
+				};
 			},
 			error : function(){
 				console.log("에러 발생");
