@@ -1,16 +1,32 @@
 @charset "UTF-8";
 .post_wrap {
-	width: 900px;
+	width: 860px;
 	margin: 0 auto;
 	margin-top: 50px;
+	/* text-align: center; */
 	text-align: left;
 }
 .post_wrap>img{
-	margin: 50px 0;
+	width: 100%;
+    object-fit: cover;
+    margin: 40px 0;
 }
-.post-top
+.post-top h1{
+	font-size: 1.8rem;
+	color: #fff;
+	font-weight: 600;
+}
+.post-top span{
+	display: inline-block;
+	margin: 5px 0;
+	font-size: 1.1rem;
+}
+.post-top a{
+	opacity: 0.5;
+}
 .text {
-    text-align :justify;
+    /* text-align :justify; */
+    text-align: left;
     font-size: 1.1rem;
     line-height: 1.7rem;
     margin: 15px 0;

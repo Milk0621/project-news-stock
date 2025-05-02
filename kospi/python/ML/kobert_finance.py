@@ -39,15 +39,19 @@ def kobert_keyword(text):
 
     # 확률 계산 및 예측 클래스
     probs = tf.nn.softmax(outputs.logits, axis=-1).numpy()[0]
+    np.set_printoptions(suppress=True)
+    percentages = probs * 100
+    percentages_rounded = np.round(percentages, 2)
     #[0.1, 0.5, 0.4]
     pred_class = np.argmax(probs)
+    print(percentages_rounded)
     #1
 
+
     label_map = {0: "부정", 1: "중립", 2: "긍정"}
-    print(f"\n[예측 결과] → {label_map[pred_class]}")
+    print(f"\n[예측 결과] → {label_map[pred_class]} ")
     senti_result = label_map[pred_class]
     
-
     # print(f"[클래스별 확률] → {probs}")
 
     # 어텐션 출력 (키워드 부분)
@@ -121,7 +125,7 @@ def kobert_keyword(text):
         print(f"{token} (평균 가중치: {score:.4f})")
         keyword.append(token)
 
-    return senti_result, keyword
+    return senti_result, keyword, percentages_rounded
 
 #csv 데이터를 이용한 검증
 # import pandas as pd
@@ -165,24 +169,14 @@ def kobert_keyword(text):
 # print("\n[CSV 전체 데이터 평가 결과]")
 # print(classification_report(y_true, y_pred, target_names=label_encoder.classes_, digits=4))
 
-# kobert_keyword("""코스피지수가 25일 미국발(發) 훈풍과 긍정적 한·미 관세 협상 분위기에 힘입어 강세로 출발한 후 오름폭을 소폭 축소해 2530선에서 움직이고 있다.
+# kobert_keyword("""
 
 # 이날 오전 10시59분 현재 코스피지수는 전 거래일보다 15.65포인트(0.62%) 오른 2537.98을 기록하고 있다. 이날 지수는 0.88% 오름세로 출발한 후 한때 1.22%까지 상승폭을 확대하기도 했다.
 
-# 유가증권시장에서 외국인과 기관이 각각 741억원과 2287억원어치를 사들이고 있다. 반면 개인은 2993억원어치를 팔아치우고 있다.
-
 # 이날 새벽 뉴욕증시는 미국과 주요국의 협상이 시작된 가운데 관세 완화 기대가 반영되면서 사흘 연속 강세로 마감했다. 도널드 트럼프 미 대통령이 자동차 부품에 대한 관세 일부를 면제할 것이라고 발언한 점도 투자심리를 개선하는 데 일조했다. 우량주 30개를 묶은 다우지수는 전장 대비 1.23% 올랐고, 나스닥종합지수와 S&P500지수도 각각 2.74%와 2.03% 상승했다.
-
-# 코스피 시가총액 상위 종목 중 삼성전자, SK하이닉스, 현대차, 셀트리온, KB금융, 네이버, 신한지주 등이 올랐다. 반면 삼성바이오로직스, 한화에어로스페이스, 기아 등은 내리고 있다.
 
 # 조선주는 존 펠란 미 해군성 장관의 방한 소식에 동반 강세다. 한화오션(8.03%)을 비롯해 HD현대중공업(4.79%), HD한국조선해양(4.01%), HJ중공업(2.2%), HD현대미포(1.83%) 등이 일제히 오르고 있다.
 
-# 반면 카카오는 4%대 약세를 나타내고 있다. 이날 SK텔레콤이 보유하고 있는 카카오 지분 전량(1081만8510주)을 블록딜(시간외 대량매매) 방식으로 처분한다는 소식이 영향을 준 것으로 풀이된다.
-
 # 코스닥지수는 3.11포인트(0.43%) 오른 729.19를 나타내고 있다.
-
-# 코스닥시장에서는 개인과 외국인이 각각 218억원과 88억원어치를 사들이는 반면 기관이 248억원어치를 팔아치우고 있다.
-
-# 코스닥 시총 상위 종목 중 에코프로비엠, 펩트론, 삼천당제약 등이 오르는 반면 알테오젠, HLB, 레인보우로보틱스, 휴젤, 리가켐바이오, 파마리서치, 코오롱티슈진 등이 내리고 있다.
 
 # 반도체 장비 기업 리노공업은 5대 1 액면분할을 단행한 후 첫 거래일을 맞은 이날 현재 6%대 강세를 보이고 있다.""")

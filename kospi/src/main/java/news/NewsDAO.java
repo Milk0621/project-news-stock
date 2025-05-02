@@ -25,7 +25,7 @@ public class NewsDAO extends DBManager{
 			nvo.setContent(getString("content"));
 			nvo.setImg(getString("img"));
 			nvo.setDate(getString("date"));
-			nvo.setSenti_score(getString("senti_score"));
+			nvo.setSenti_score(getString("senti_result"));
 			nvo.setNo(getString("no"));
 			list.add(nvo);
 		}

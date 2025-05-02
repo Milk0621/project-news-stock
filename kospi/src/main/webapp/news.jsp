@@ -56,13 +56,14 @@
 			<h1>언론사별 뉴스</h1>
 			<div class="media_news">
 				<div class="media_category">
+				    <button data-name="전체">전체</button>
 				    <button data-name="이데일리">이데일리</button>
 				    <button data-name="아시아경제">아시아경제</button>
 				    <button data-name="매일경제">매일경제</button>
 				    <button data-name="한국경제">한국경제</button>
 				    <button data-name="머니투데이">머니투데이</button>
 				</div>
-				<% for(int i = 0; i < list.size(); i++){ 
+				<% for(int i = 0; i < nlist.size(); i++){ 
 					NewsVO vo = nlist.get(i);
 				%>
 					<div class="content" data-name="<%=vo.getName()%>" onclick="location.href='post.jsp?no=<%=vo.getNo()%>'">
@@ -83,7 +84,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(document).ready(function() {
-    filterNews('이데일리');
+    filterNews('전체');
 
     $('.media_category button').click(function() {
         let mediaName = $(this).data('name'); // 버튼의 data-name 가져오기

@@ -15,8 +15,8 @@
 	<div class="post_wrap">
 		<div class="post-top">
 			<h1>코스피, 실적 앞두고 관망세... 2490선 유지</h1>
-			<span>아시아경제</span> · <span>2025-04-21</span>
-			<a href="https://view.asiae.co.kr/article/2025042109485754248"></a>
+			<span>아시아경제 ·</span> <span>2025-04-21</span>
+			<div><a href="https://view.asiae.co.kr/article/2025042109485754248">https://view.asiae.co.kr/article/2025042109425192754</a></div>
 		</div>
 		<img src="https://cphoto.asiae.co.kr/listimglink/1/2025042109380927353_1745195889.jpg">
 		<p class="text">

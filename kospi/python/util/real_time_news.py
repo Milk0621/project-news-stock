@@ -96,6 +96,7 @@ def fun(news):
                 child.decompose()
             
             content = soup.get_text(strip=True)
+            # con_text = " ".join([p.strip().replace("\n", " ") for p in content])
             
             try:
                 img = news_body.find_element(By.TAG_NAME, "img").get_attribute("src")
@@ -103,15 +104,58 @@ def fun(news):
             except:
                 img = ""
                 
+            time.sleep(2)
+            
             driver.close()
             driver.switch_to.window(driver.window_handles[0])
             
-            insert_query = """insert into news(name, title, link, content, img, date) select %s, %s, %s, %s, %s, %s from dual where not exists
+            senti_result, keywords, percentages = kobert_keyword(content)
+
+            dict = {
+                "name" : news,
+                "title" : title.strip(),
+                "link" : link.strip(),
+                "content" : content.strip(),
+                "img" : img.strip(),
+                "date" : ymd,
+                "senti_result" : senti_result
+            }
+            news_data.append(dict)
+            
+            news_insert = """insert into news(name, title, link, content, img, date, senti_result) select %s, %s, %s, %s, %s, %s, %s from dual where not exists
             (
                 select name, title from news where name = %s and title = %s
             )"""
-            cursor.execute(insert_query, (news, dict["title"], dict["link"], dict["content"], dict["img"], ymd, news, dict["title"]))
+            cursor.execute(news_insert, (news, dict["title"], dict["link"], dict["content"], dict["img"], ymd, dict["senti_result"], news, dict["title"]))
+
             conn.commit()
+
+            if cursor.lastrowid > 0:
+                #cursor.lastrowid = 114 or 115 일반 숫자
+                #keyword = [1,2,3] 리스트
+
+                print(cursor.lastrowid)
+
+                last_row_id = [cursor.lastrowid] * len(keywords)
+                print(last_row_id)
+                print(keywords) 
+                data = list(zip(last_row_id, keywords))
+                
+                #뉴스가 인서트됨
+                #키워드 테이블에 인서트
+                keyword_insert = "insert into keyword(no, keyword) values(%s, %s)"
+                cursor.executemany(keyword_insert,(data))
+                conn.commit()
+
+                bad, mid, good = percentages
+                senti_insert = "insert into senti_result(no, bad, mid, good) values(%s, %s, %s, %s)"
+                cursor.execute(senti_insert, (last_row_id[0], bad, mid, good))
+                conn.commit()
+  
+            else:
+                #뉴스가 중복되어서 인서트 안함
+                #단어 인서트 안해도됨
+                pass
             
     elif news == "아시아경제":
         for i, box in enumerate(boxs):
@@ -130,8 +174,8 @@ def fun(news):
             
             title = driver.title
             div = driver.find_element(By.CLASS_NAME, "article")
-            con_text = div.find_elements(By.CSS_SELECTOR, "p")
-            content = " ".join([p.text.strip().replace("\n", " ") for p in con_text])
+            content = div.find_elements(By.CSS_SELECTOR, "p")
+            con_text = " ".join([p.text.strip().replace("\n", " ") for p in con_text])
 
             try:
                 img = div.find_element(By.TAG_NAME, "img").get_attribute("src")
@@ -139,26 +183,58 @@ def fun(news):
             except:
                 img = ""
                 
+            time.sleep(2)
+            
             driver.close()
             driver.switch_to.window(driver.window_handles[0])
+            
+            senti_result, keywords, percentages = kobert_keyword(con_text)
             
             dict = {
                 "name" : news,
                 "title" : title.strip(),
                 "link" : link.strip(),
-                "content" : content.strip(),
+                "content" : con_text.strip(),
                 "img" : img.strip(),
-                "date" : ymd
+                "date" : ymd,
+                "senti_result" : senti_result
             }
             news_data.append(dict)
-            print(dict)
 
-            insert_query = """insert into news(name, title, link, content, img, date) select %s, %s, %s, %s, %s, %s from dual where not exists
+            news_insert = """insert into news(name, title, link, content, img, date, senti_result) select %s, %s, %s, %s, %s, %s, %s from dual where not exists
             (
                 select name, title from news where name = %s and title = %s
             )"""
-            cursor.execute(insert_query, (news, dict["title"], dict["link"], dict["content"], dict["img"], ymd, news, dict["title"]))
+            cursor.execute(news_insert, (news, dict["title"], dict["link"], dict["content"], dict["img"], ymd, dict["senti_result"], news, dict["title"]))
+
             conn.commit()
+
+            if cursor.lastrowid > 0:
+                #cursor.lastrowid = 114 or 115 일반 숫자
+                #keyword = [1,2,3] 리스트
+
+                print(cursor.lastrowid)
+
+                last_row_id = [cursor.lastrowid] * len(keywords)
+                print(last_row_id)
+                print(keywords) 
+                data = list(zip(last_row_id, keywords))
+                
+                #뉴스가 인서트됨
+                #키워드 테이블에 인서트
+                keyword_insert = "insert into keyword(no, keyword) values(%s, %s)"
+                cursor.executemany(keyword_insert,(data))
+                conn.commit()
+
+                bad, mid, good = percentages
+                senti_insert = "insert into senti_result(no, bad, mid, good) values(%s, %s, %s, %s)"
+                cursor.execute(senti_insert, (last_row_id[0], bad, mid, good))
+                conn.commit()
+  
+            else:
+                #뉴스가 중복되어서 인서트 안함
+                #단어 인서트 안해도됨
+                pass
             
     elif news == "매일경제":
         for i, box in enumerate(boxs):
@@ -186,7 +262,7 @@ def fun(news):
             driver.close()
             driver.switch_to.window(driver.window_handles[0])
             
-            senti_result, keyword = kobert_keyword(con_text)
+            senti_result, keywords, percentages = kobert_keyword(con_text)
             
             dict = {
                 "name" : news,
@@ -199,29 +275,41 @@ def fun(news):
             }
             news_data.append(dict)
             print(dict)
-            insert_query = """insert into news(name, title, link, content, img, date, senti_result) select %s, %s, %s, %s, %s, %s, %s from dual where not exists
+            news_insert = """insert into news(name, title, link, content, img, date, senti_result) select %s, %s, %s, %s, %s, %s, %s from dual where not exists
             (
                 select name, title from news where name = %s and title = %s
             )"""
-            cursor.execute(insert_query, (news, dict["title"], dict["link"], dict["content"], dict["img"], ymd, dict["senti_result"], news, dict["title"]))
+            cursor.execute(news_insert, (news, dict["title"], dict["link"], dict["content"], dict["img"], ymd, dict["senti_result"], news, dict["title"]))
+
+            conn.commit()
+
             if cursor.lastrowid > 0:
                 #cursor.lastrowid = 114 or 115 일반 숫자
                 #keyword = [1,2,3] 리스트
-                last_row_id = [cursor.lastrowid] * len(keyword)
+
+                print(cursor.lastrowid)
+
+                last_row_id = [cursor.lastrowid] * len(keywords)
+                print(last_row_id)
+                print(keywords) 
+                data = list(zip(last_row_id, keywords))
                 
                 #뉴스가 인서트됨
                 #키워드 테이블에 인서트
-                keyword_insert = """
-                    insert into keyword(no, keyword) values(%s, %s)
-                """
-                cursor.executemany(keyword_insert,(last_row_id, keyword))
-                pass
+                keyword_insert = "insert into keyword(no, keyword) values(%s, %s)"
+                cursor.executemany(keyword_insert,(data))
+                conn.commit()
+
+                bad, mid, good = percentages
+                senti_insert = "insert into senti_result(no, bad, mid, good) values(%s, %s, %s, %s)"
+                cursor.execute(senti_insert, (last_row_id[0], bad, mid, good))
+                conn.commit()
+  
             else:
                 #뉴스가 중복되어서 인서트 안함
                 #단어 인서트 안해도됨
                 pass
-            conn.commit()
-            
+
     elif news == "한국경제":
         for i, box in enumerate(boxs):
             link = box.find_elements(By.XPATH, "./div")[1].find_element(By.TAG_NAME, "a").get_attribute("href")
@@ -246,14 +334,19 @@ def fun(news):
                 child.decompose()
             
             content = soup.get_text(strip=True)
+            # con_text = " ".join([p.text.strip().replace("\n", " ") for p in content])
             try:
                 img = news_body.find_element(By.TAG_NAME, "img").get_attribute("src")
                 time.sleep(2)
             except:
                 img = ""
                 
+            time.sleep(2)
+            
             driver.close()
             driver.switch_to.window(driver.window_handles[0])
+            
+            senti_result, keywords, percentages = kobert_keyword(content)
             
             dict = {
                 "name" : news,
@@ -265,12 +358,40 @@ def fun(news):
             }
             news_data.append(dict)
             print(dict)
-            insert_query = """insert into news(name, title, link, content, img, date) select %s, %s, %s, %s, %s, %s from dual where not exists
+            news_insert = """insert into news(name, title, link, content, img, date, senti_result) select %s, %s, %s, %s, %s, %s, %s from dual where not exists
             (
                 select name, title from news where name = %s and title = %s
             )"""
-            cursor.execute(insert_query, (news, dict["title"], dict["link"], dict["content"], dict["img"], ymd, news, dict["title"]))
+            cursor.execute(news_insert, (news, dict["title"], dict["link"], dict["content"], dict["img"], ymd, dict["senti_result"], news, dict["title"]))
+
             conn.commit()
+
+            if cursor.lastrowid > 0:
+                #cursor.lastrowid = 114 or 115 일반 숫자
+                #keyword = [1,2,3] 리스트
+
+                print(cursor.lastrowid)
+
+                last_row_id = [cursor.lastrowid] * len(keywords)
+                print(last_row_id)
+                print(keywords) 
+                data = list(zip(last_row_id, keywords))
+                
+                #뉴스가 인서트됨
+                #키워드 테이블에 인서트
+                keyword_insert = "insert into keyword(no, keyword) values(%s, %s)"
+                cursor.executemany(keyword_insert,(data))
+                conn.commit()
+
+                bad, mid, good = percentages
+                senti_insert = "insert into senti_result(no, bad, mid, good) values(%s, %s, %s, %s)"
+                cursor.execute(senti_insert, (last_row_id[0], bad, mid, good))
+                conn.commit()
+  
+            else:
+                #뉴스가 중복되어서 인서트 안함
+                #단어 인서트 안해도됨
+                pass
             
             
             
@@ -298,6 +419,7 @@ def fun(news):
                 child.decompose()
             
             content = soup.get_text(strip=True)
+            # con_text = " ".join([p.text.strip().replace("\n", " ") for p in content])
             
             try:
                 img = news_body.find_element(By.TAG_NAME, "img").get_attribute("src")
@@ -305,8 +427,12 @@ def fun(news):
             except:
                 img = ""
                 
+            time.sleep(2)
+            
             driver.close()
             driver.switch_to.window(driver.window_handles[0])
+            
+            senti_result, keywords, percentages = kobert_keyword(content)
     
             dict = {
                 "name" : news,
@@ -317,16 +443,42 @@ def fun(news):
                 "date" : ymd
             }
             
-            
-            
             news_data.append(dict)
             print(dict)
-            insert_query = """insert into news(name, title, link, content, img, date) select %s, %s, %s, %s, %s, %s from dual where not exists
+            news_insert = """insert into news(name, title, link, content, img, date, senti_result) select %s, %s, %s, %s, %s, %s, %s from dual where not exists
             (
                 select name, title from news where name = %s and title = %s
             )"""
-            cursor.execute(insert_query, (news, dict["title"], dict["link"], dict["content"], dict["img"], ymd, news, dict["title"]))
+            cursor.execute(news_insert, (news, dict["title"], dict["link"], dict["content"], dict["img"], ymd, dict["senti_result"], news, dict["title"]))
+
             conn.commit()
+
+            if cursor.lastrowid > 0:
+                #cursor.lastrowid = 114 or 115 일반 숫자
+                #keyword = [1,2,3] 리스트
+
+                print(cursor.lastrowid)
+
+                last_row_id = [cursor.lastrowid] * len(keywords)
+                print(last_row_id)
+                print(keywords) 
+                data = list(zip(last_row_id, keywords))
+                
+                #뉴스가 인서트됨
+                #키워드 테이블에 인서트
+                keyword_insert = "insert into keyword(no, keyword) values(%s, %s)"
+                cursor.executemany(keyword_insert,(data))
+                conn.commit()
+
+                bad, mid, good = percentages
+                senti_insert = "insert into senti_result(no, bad, mid, good) values(%s, %s, %s, %s)"
+                cursor.execute(senti_insert, (last_row_id[0], bad, mid, good))
+                conn.commit()
+  
+            else:
+                #뉴스가 중복되어서 인서트 안함
+                #단어 인서트 안해도됨
+                pass
 
     df2 = pd.DataFrame(news_data)
     df2.to_csv(f"./{news}-{date.today()}.csv", index=False)
@@ -336,15 +488,15 @@ def fun(news):
     conn.close()
 
 
-fun("매일경제")
+# fun("매일경제")
 
-# #매일경제, 이데일리, 아시아경제, 한국경제, 머니투데이
-# #스케줄러
-# schedule.every(15).minutes.at(":00").do(fun, "이데일리")
-# schedule.every(15).minutes.at(":03").do(fun, "아시아경제")
-# schedule.every(15).minutes.at(":06").do(fun, "한국경제")
-# schedule.every(15).minutes.at(":09").do(fun, "매일경제")
-# schedule.every(15).minutes.at(":12").do(fun, "머니투데이")
-# while True:
-#     schedule.run_pending()
-#     time.sleep(2)
+#매일경제, 이데일리, 아시아경제, 한국경제, 머니투데이
+#스케줄러
+schedule.every(1).minutes.at(":00").do(fun, "이데일리")
+schedule.every(1).minutes.at(":03").do(fun, "아시아경제")
+schedule.every(1).minutes.at(":06").do(fun, "한국경제")
+schedule.every(1).minutes.at(":09").do(fun, "매일경제")
+schedule.every(1).minutes.at(":12").do(fun, "머니투데이")
+while True:
+    schedule.run_pending()
+    time.sleep(2)
