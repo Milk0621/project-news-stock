@@ -108,14 +108,14 @@
 							if(!vo.getId().equals(userId)){
 					%>
 								<div class="msg-con">
-									<p><%=vo.getContent() %></p>
-									<span><%=vo.getId() %></span>
+									<p class="id">ID : <%=vo.getId() %></p>
+									<p class="msg-txt"><%=vo.getContent() %></p>
 									<span><%=vo.getCreate_date() %></span>
 								</div>
 					<%		}else{ %>
 								<div class="msg-con-right">
-									<p><%=vo.getContent() %></p>
-									<span><%=vo.getId() %></span>
+									<p class='id'>ID : <%=vo.getId() %></p>
+									<p class="msg-txt"><%=vo.getContent() %></p>
 									<span><%=vo.getCreate_date() %></span>
 								</div>
 					<%
@@ -125,7 +125,6 @@
 				</div>
 				<div class="msg-input">
 					<input type="text" id="messageInput" placeholder="메시지 입력">
-		    		<button id="sendMessageBtn">전송</button>
 				</div>
 			</div>
 		</div>
@@ -239,9 +238,9 @@ $(document).ready(function () {
 		$("#mypage").fadeIn();
     });
     
-    messageBox.addEventListener("keyup",function(key){
-        if(key.keyCode==13) {
-        	sendMessage()
+    $("#messageInput").on("keyup", function(e) {
+        if (e.key === "Enter" || e.keyCode === 13) {
+            sendMessage();
         }
     });
 	
@@ -320,9 +319,9 @@ $(document).ready(function () {
 				if (result.trim() == "success"){
 					let html = "";
 					html += "<div class='msg-con-right'>";
-					html += 	"<p>"+chat.val()+"</p>";
-					html +=		"<span>"+msg.user+"</span> ";
-					html += "<span>" +date + " " + time + "</span>"
+					html +=		"<p class='id'>"+msg.user+"</p> ";
+					html += 	"<p class='msg-txt'>"+chat.val()+"</p>";
+					html += 	"<span>" +date + " " + time + "</span>"
 					html += "</div>";
 					message.innerHTML += html;
 					message.scrollTop = message.scrollHeight

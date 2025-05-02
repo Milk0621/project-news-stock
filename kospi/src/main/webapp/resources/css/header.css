@@ -156,7 +156,7 @@ header ul li:hover, #login-btn:hover, #logout-btn:hover{
     height: 100%;
 }
 .modal-chat{
-	background: #2c2c35;
+	background: #26262d;
     padding: 30px;
     margin-top:100px;
     width: 100%;
@@ -166,6 +166,7 @@ header ul li:hover, #login-btn:hover, #logout-btn:hover{
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+    box-shadow: -5px 0px 30px 0px #00000036;
 }
 #alarm{
 	position: fixed;
@@ -195,17 +196,27 @@ header ul li:hover, #login-btn:hover, #logout-btn:hover{
 }
 .msg-con {
 	text-align: left;
-	padding: 15px 0;
-    border-bottom: 1px solid #fff;
+	padding: 22px 0;
+	border-bottom: 1px solid #00000040;
 }
 .msg-con-right {
 	text-align: right;
-	padding: 15px 0;
-	border-bottom: 1px solid #fff;
+	padding: 22px 0;
+	border-bottom: 1px solid #00000040;
 }
 .msg-con p, .msg-con-right p{
-	font-size: 1.1rem;
 	color: #fff;
+}
+.id{
+	background-color: #3b3b46;
+	display: inline-block;
+	padding: 5px 10px;
+	border-radius: 5px;
+}
+.msg-txt{
+	font-weight: 300;
+	font-size: 1.1rem;
+	margin-top: 7px;
 }
 .msg-con span, .msg-con-right span{
 	font-size: 0.8rem;
@@ -216,10 +227,11 @@ header ul li:hover, #login-btn:hover, #logout-btn:hover{
     justify-content: space-between;
 }
 #messageInput{
-	width: 90%;
-    height: 40px;
+	width: 100%;
+    height: 50px;
     border: none;
     padding-left: 10px;
+    background-color: #3b3b46;
 }
 .masg-input>button{
 	width: 70px;
