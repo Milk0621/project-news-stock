@@ -31,65 +31,68 @@ async def handler(websocket):
         connected_clients.remove(websocket)
         
 async def test():
-    ws_app = await websockets.connect("wss://api.kiwoom.com:10000/api/dostk/websocket")
-    param = {
-        'trnm': 'LOGIN',
-        'token': fn_au10001()
-    }
-    await ws_app.send(message=json.dumps(param))
-    while True:
-        response = json.loads(await ws_app.recv())
-        if response.get('trnm') == 'LOGIN':
-            if response.get('return_code') != 0:
-                print('로그인 실패하였습니다. : ', response.get('return_msg'))
-                await ws_app.close()
-            else:
-                print('로그인 성공하였습니다.')
-                data = {
-                    'trnm': 'REG', # 서비스명
-                    'grp_no': '1', # 그룹번호
-                    'refresh': '1', # 기존등록유지여부
-                    'data': [{ # 실시간 등록 리스트
-                        'item': ['001'], # 실시간 등록 요소
-                        'type': ['0J'], # 실시간 항목
-                    }]
-                }
-                await ws_app.send(message=json.dumps(data))
-        elif response.get('trnm') == 'PING':
-            await ws_app.send(json.dumps(response))
+    try:
+        ws_app = await websockets.connect("wss://api.kiwoom.com:10000/api/dostk/websocket",  ping_interval=None)
+        param = {
+            'trnm': 'LOGIN',
+            'token': fn_au10001()
+        }
+        await ws_app.send(message=json.dumps(param))
+        while True:
+            response = json.loads(await ws_app.recv())
+            if response.get('trnm') == 'LOGIN':
+                if response.get('return_code') != 0:
+                    print('로그인 실패하였습니다. : ', response.get('return_msg'))
+                    await ws_app.close()
+                else:
+                    print('로그인 성공하였습니다.')
+                    data = {
+                        'trnm': 'REG', # 서비스명
+                        'grp_no': '1', # 그룹번호
+                        'refresh': '1', # 기존등록유지여부
+                        'data': [{ # 실시간 등록 리스트
+                            'item': ['001'], # 실시간 등록 요소
+                            'type': ['0J'], # 실시간 항목
+                        }]
+                    }
+                    await ws_app.send(message=json.dumps(data))
+            elif response.get('trnm') == 'PING':
+                await ws_app.send(json.dumps(response))
 
-        if response.get('trnm') == 'REAL':
-            print(f"결과아아아아아 {response}")
-            conn = pymysql.connect(
-            host="158.247.211.92",
-            user="milk",
-            password="0621",
-            database="kospi"
-            )
-            cursor = conn.cursor()
+            if response.get('trnm') == 'REAL':
+                print(f"결과아아아아아 {response}")
+                conn = pymysql.connect(
+                host="158.247.211.92",
+                user="milk",
+                password="0621",
+                database="kospi"
+                )
+                cursor = conn.cursor()
 
-            time = response['data'][0]['values']['20']
-            price = response['data'][0]['values']['10']
+                time = response['data'][0]['values']['20']
+                price = response['data'][0]['values']['10']
 
-            today = datetime.now()
-            ymd = today.strftime("%Y-%m-%d")
-            hour = time[:2]
-            minute = time[2:4]
-            second = time[4:]
+                today = datetime.now()
+                ymd = today.strftime("%Y-%m-%d")
+                hour = time[:2]
+                minute = time[2:4]
+                second = time[4:]
 
-            date_string = f"{ymd} {hour}:{minute}:{second}"
-            date = datetime.strptime(date_string, "%Y-%m-%d %H:%M:%S")
-            price = price[1:]
-            
-
-            insert_query = """insert into chart(date, price) select %s, %s from dual where not exists
-            (
-                select date from chart where date = %s
-            )"""
-            cursor.execute(insert_query, (date, price, date))
-            conn.commit()
+                date_string = f"{ymd} {hour}:{minute}:{second}"
+                date = datetime.strptime(date_string, "%Y-%m-%d %H:%M:%S")
+                price = price[1:]
                 
-        await asyncio.sleep(1)
+
+                insert_query = """insert into chart(date, price) select %s, %s from dual where not exists
+                (
+                    select date from chart where date = %s
+                )"""
+                cursor.execute(insert_query, (date, price, date))
+                conn.commit()
+                    
+            await asyncio.sleep(1)
+    except websockets.exceptions.ConnectionClosedOK:
+        ws_app = await websockets.connect("wss://api.kiwoom.com:10000/api/dostk/websocket",  ping_interval=None)
         
 async def broadcast():
     while True:
@@ -145,8 +148,13 @@ async def broadcast():
             #ids가 20명 -> 20개
             #유저테이블에있는 모든 유저의 아이디 조회
 
-            sql = "insert into alarm(id, title, content, date)values(%s, %s, %s, %s)"
-            cursor.executemany(sql, (data))
+            insert_keys = []
+            for i in ids:
+                
+                sql = "insert into alarm(id, title, content, date)values(%s, %s, %s, %s)"
+                cursor.execute(sql, i, title[0], content[0], ymd[0])
+                insert_key = cursor.lastrowid
+                insert_keys.append({"id" : i, "key" : insert_key})
             conn.commit()
 
             #finance_notification의 flag를 True로 업데이트
@@ -154,10 +162,12 @@ async def broadcast():
             cursor.execute(sql)
             conn.commit()
             
+            
             for connection in connected_clients:
                 message = {
                     "user" : "server",
                     "type" : "noti",
+                    "keys" : insert_keys,
                     "message" : result["title"]
                 }
                 message =  json.dumps(message)

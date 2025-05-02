@@ -10,6 +10,9 @@ public class AlarmDAO extends DBManager{
 	//알람조회
 	public List<AlarmVO> alarmList(String id){
 		List<AlarmVO> list = new ArrayList<AlarmVO>();
+		if(id.isEmpty()) {
+			return list;
+		}
 		
 		driverLoad();
 		DBConnect();
