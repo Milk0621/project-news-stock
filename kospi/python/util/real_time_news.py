@@ -205,11 +205,16 @@ def fun(news):
             )"""
             cursor.execute(insert_query, (news, dict["title"], dict["link"], dict["content"], dict["img"], ymd, dict["senti_result"], news, dict["title"]))
             if cursor.lastrowid > 0:
+                #cursor.lastrowid = 114 or 115 일반 숫자
+                #keyword = [1,2,3] 리스트
+                last_row_id = [cursor.lastrowid] * len(keyword)
+                
                 #뉴스가 인서트됨
                 #키워드 테이블에 인서트
                 keyword_insert = """
-                    
+                    insert into keyword(no, keyword) values(%s, %s)
                 """
+                cursor.executemany(keyword_insert,(last_row_id, keyword))
                 pass
             else:
                 #뉴스가 중복되어서 인서트 안함

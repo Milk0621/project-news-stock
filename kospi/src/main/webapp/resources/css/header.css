@@ -147,10 +147,10 @@ header ul li:hover, #login-btn:hover, #logout-btn:hover{
 	cursor: pointer;
 }
 #chat{
-	display: none;
+	/* display: none; */
     position: fixed;
 	margin-top: 100px;
-    right: 0;
+    right: -35%;
     bottom: 0;
     width: 35%;
     height: 100%;
