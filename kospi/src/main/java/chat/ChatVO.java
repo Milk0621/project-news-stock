@@ -4,10 +4,9 @@ public class ChatVO {
 	private String no;
 	private String content;
 	private String id;
+	private String nick;
 	private String create_date;
 	private String delete_date;
-	
-	
 	public String getNo() {
 		return no;
 	}
@@ -26,6 +25,12 @@ public class ChatVO {
 	public void setId(String id) {
 		this.id = id;
 	}
+	public String getNick() {
+		return nick;
+	}
+	public void setNick(String nick) {
+		this.nick = nick;
+	}
 	public String getCreate_date() {
 		return create_date;
 	}
@@ -38,6 +43,6 @@ public class ChatVO {
 	public void setDelete_date(String delete_date) {
 		this.delete_date = delete_date;
 	}
-
+	
 	
 }

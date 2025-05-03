@@ -108,13 +108,13 @@
 							if(!vo.getId().equals(userId)){
 					%>
 								<div class="msg-con">
-									<p class="id">ID : <%=vo.getId() %></p>
+									<p class="id">닉네임 : <%=vo.getNick() %></p>
 									<p class="msg-txt"><%=vo.getContent() %></p>
 									<span><%=vo.getCreate_date() %></span>
 								</div>
 					<%		}else{ %>
 								<div class="msg-con-right">
-									<p class='id'>ID : <%=vo.getId() %></p>
+									<p class='id'>닉네임 : <%=vo.getNick() %></p>
 									<p class="msg-txt"><%=vo.getContent() %></p>
 									<span><%=vo.getCreate_date() %></span>
 								</div>
@@ -131,7 +131,7 @@
 	<% } %>
 	<div id="alarm">
 		<div class="alarm-info">
-			<span class="close">&times;</span>
+			<span class="close" id="alarm-close">&times;</span>
 			<h2>알람</h2>
 			<div id="alarms">
 				<% 
@@ -171,6 +171,7 @@ $(document).ready(function () {
 	const messageBox = document.getElementById("messageInput");
 	
 	let userId = '<%= user != null ? user.getId() : "" %>';
+	let userNick = '<%= user != null ? user.getNick() : "" %>';
 	if(userId != ""){
 	message.scrollTop = message.scrollHeight
 	}
@@ -251,10 +252,27 @@ $(document).ready(function () {
         const time = now.toTimeString().split(' ')[0];
         return { date, time };
     }
-
+	
+    $("#alarm-close").on("click", function() {
+		$.ajax({
+			url : "./ok/alarmCheckok.jsp",
+			type : "post",
+			data : {
+				id : userId
+			},
+			success : function(result){
+				console.log(result);
+				if(result.trim() == "success"){
+					$(".alarm-dot").fadeOut();
+				};
+			},
+			error : function(){
+				console.log("에러 발생");
+			}
+		});
+    });
+    
     //챗
-    let uuid = crypto.randomUUID();
-	console.log(uuid)
 	let sendMessageBtn = $("#sendMessageBtn");
 	
 	const socket = new WebSocket("ws://localhost:8765/chat");
@@ -285,27 +303,45 @@ $(document).ready(function () {
 					no = msg.keys[i].key
 				}
 			}
-			console.log(msg.message)
+		}else if(msg.type == "message"){
+			let messageEl = "";
+			if(msg.user == userId){
+				messageEl += '<div class="msg-con-right">'
+				messageEl += '<p class="id">닉네임 : '+msg.user+'</p>'
+				messageEl += '<p class="msg-txt">'+msg.message+'</p>'
+				messageEl += '<span>'+msg.date+'</span>'
+				messageEl += '</div>'
+			}else{
+				messageEl += '<div class="msg-con">'
+				messageEl += '<p class="id">닉네임 : '+msg.user+'</p>'
+				messageEl += '<p class="msg-txt">'+msg.message+'</p>'
+				messageEl += '<span>'+msg.date+'</span>'
+				messageEl += '</div>'
+			}
+			
+			$("#messages").append(messageEl);
+			message.scrollTop = message.scrollHeight
 		}
-		
-        const message = document.getElementById("messages");
-        //const sender = msg.user || userId;
-        const { date, time } = getCurrentDateTime();
     };
     
     
-   	
+   	//메시지 작성
     function sendMessage(){
 		let chat = $("#messageInput");
 		
-		let msg = {
-			user : userId,
-			message : messageBox.value
-		}
+		
 		//"{user : uuid, message : hi}"
-		socket.send(JSON.stringify(msg));
 		
 		const { date, time } = getCurrentDateTime();
+		
+		let msg = {
+			user : userId,
+			message : messageBox.value,
+			type: "message",
+			date : date
+		}
+		
+		socket.send(JSON.stringify(msg));
 		
 	    $.ajax({
 			url : "./ok/chatok.jsp",
@@ -319,7 +355,7 @@ $(document).ready(function () {
 				if (result.trim() == "success"){
 					let html = "";
 					html += "<div class='msg-con-right'>";
-					html +=		"<p class='id'>"+msg.user+"</p> ";
+					html +=		"<p class='id'>닉네임:"+userNick+"</p> ";
 					html += 	"<p class='msg-txt'>"+chat.val()+"</p>";
 					html += 	"<span>" +date + " " + time + "</span>"
 					html += "</div>";
@@ -340,8 +376,7 @@ $(document).ready(function () {
 	sendMessageBtn?.click(function(){
 		sendMessage()
 	});
+	
 });
-
-
 </script>
 </html>

@@ -27,11 +27,15 @@ def job():
     #모델 평가
     loss = model.evaluate(kospi, close_scaled.reshape(1, close_shape, 1), verbose=1)
     #테스트데이터를 이용한 모델 점수 평가
+    loss = f"{float(loss[0]):.4f}"
     print(f"손실률 : {loss}")
+    #mse
 
     pred = model.predict(kospi)
     result = ans_scaler.inverse_transform(pred.reshape(-1, 1))
     result = result[-1][0]
+    result = f"{result:.2f}"
+    print(result)
 
     #예측값 저장 (날짜 / 예측 / 손실)
     # today = date.today()
@@ -54,11 +58,19 @@ def job():
     )
     cursor = conn.cursor()
     sql = "insert into finance_notification(title, content) values(%s, %s)"
-    cursor.execute(sql, ("내일 주가 알림", f"내일 코스피 지수는 약 {result} 입니다."))
+    cursor.execute(sql, ("주가 예측", f"코스피 지수는 약 {result} 입니다."))
+    
+    conn.commit()
+    
+    sql = "insert into predict(date, predict, loss)values(%s, %s, %s)"
+    cursor.execute(sql, ("2025-04-21", result, loss))
+    
     conn.commit()
 
-schedule.every().day.at("17:13").do(job)
+# schedule.every().day.at("17:13").do(job)
 
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+job()
+
+# while True:
+#     schedule.run_pending()
+#     time.sleep(1)
