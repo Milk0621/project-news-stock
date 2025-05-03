@@ -1,6 +1,12 @@
+<%@page import="dates.DatesVO"%>
+<%@page import="dates.DatesDAO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ include file="header.jsp" %>
+<%
+	DatesDAO dao = new DatesDAO();
+	List<DatesVO> dateAnalysisList = dao.getDateAnalysisData();
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -23,34 +29,19 @@
 					<th>주요 키워드</th>
 				</tr>
 				<tr class="margin"></tr>
-				<tr class="data">
-					<td>2025-04-30</td>
-					<td>2497.61</td>
-					<td>2561.00</td>
-					<td>긍정(61.0%)</td>
-					<td>상승, 회복, 우호, 자사주, 발표</td>
-				</tr>
-				<tr class="data">
-					<td>2025-04-29</td>
-					<td>2551.11</td>
-					<td>2548.19</td>
-					<td>부정(42.7%)</td>
-					<td>하락, 부진, 매각, 이하, 해고</td>
-				</tr>
-				<tr class="data">
-					<td>2025-04-30</td>
-					<td>2556.91</td>
-					<td>2561.21</td>
-					<td>긍정(58.1%)</td>
-					<td>상승, 회복, 우호, 자사주, 발표</td>
-				</tr>
-				<tr class="data">
-					<td>2025-04-31</td>
-					<td>2556.91</td>
-					<td>2561.21</td>
-					<td>긍정(58.1%)</td>
-					<td>상승, 회복, 우호, 자사주, 발표</td>
-				</tr>
+				<%
+					for(int i = 0; i < dateAnalysisList.size() ; i ++){
+						%>
+							<tr class="data">
+								<td><%= dateAnalysisList.get(i).getDates() %></td>
+								<td><%= dateAnalysisList.get(i).getPrice() %></td>
+								<td><%= dateAnalysisList.get(i).getPredictPrice() %></td>
+								<td><%= dateAnalysisList.get(i).getTopSentiment() %>(<%= dateAnalysisList.get(i).getTopSentimentPercentage() %>%)</td>
+								<td><%= dateAnalysisList.get(i).getKeywords() %></td>
+							</tr>
+						<%
+					}
+				%>
 			</table>
 		</div>
 	</div>
