@@ -30,13 +30,14 @@ public class ChatDAO extends DBManager{
 		driverLoad();
 		DBConnect();
 		
-		String sql = "select * from chat";
+		String sql = "select * from chat left join user on chat.id = user.id";
 		executeQuery(sql);
 		
 		while(next()) {
 			ChatVO vo = new ChatVO();
 			vo.setNo(getString("no"));
 			vo.setId(getString("id"));
+			vo.setNick(getString("nick"));
 			vo.setContent(getString("content"));
 			vo.setCreate_date(getString("create_date"));
 			list.add(vo);

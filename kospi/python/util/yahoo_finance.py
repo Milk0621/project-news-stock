@@ -7,9 +7,9 @@ from datetime import date, timedelta
 
 #과거 주가지수
 ticker = "^KS11"
-start = "2025-04-29"
-end = "2025-04-29"
-cospi = yf.download(ticker, interval="1M")
+start = "2025-04-21"
+end = "2025-05-03"
+cospi = yf.download(ticker, start, end, interval="60M")
 cospi["date"] = cospi.index
 
 # past = pd.read_csv("./datas/training/kospi.csv")
