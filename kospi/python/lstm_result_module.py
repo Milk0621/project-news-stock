@@ -5,6 +5,7 @@ import time
 import keras
 from datetime import date
 from sklearn.preprocessing import MinMaxScaler
+from holidayskr import is_holiday
 
 print(__name__)
 #현재 파일에서 실행되면 __main__
@@ -63,14 +64,24 @@ def job():
     conn.commit()
     
     sql = "insert into predict(date, predict, loss)values(%s, %s, %s)"
-    cursor.execute(sql, ("2025-04-21", result, loss))
+    cursor.execute(sql, ("2025-05-02", result, loss))
     
     conn.commit()
 
+#주말 함수
+def is_weekend(date):
+    return date.weekday() < 5
+
 # schedule.every().day.at("17:13").do(job)
 
-job()
-
-# while True:
-#     schedule.run_pending()
-#     time.sleep(1)
+# if is_weekend(today):
+#     #평일
+#     if is_holiday(str(today)):
+#         print("평일 공휴일 안돌아감")
+#     else:
+#         while True:
+#             schedule.run_pending()
+#             time.sleep(1)
+# else:
+#     #주말
+#     print("주말 안돌아감")
