@@ -138,7 +138,7 @@ async def broadcast():
             content = [content] * len(ids)
             #["내일 코스피 지수는 약 ~~~ 입니다."]
             
-            today = datetime.now()
+            today = datetime.datetime.now()
             ymd = [today.strftime("%Y-%m-%d")] * len(ids)
             #['2025-04-28']
             
@@ -148,8 +148,13 @@ async def broadcast():
             #ids가 20명 -> 20개
             #유저테이블에있는 모든 유저의 아이디 조회
 
-            sql = "insert into alarm(id, title, content, date)values(%s, %s, %s, %s)"
-            cursor.executemany(sql, (data))
+            insert_keys = []
+            for i in ids:
+                
+                sql = "insert into alarm(id, title, content, date)values(%s, %s, %s, %s)"
+                cursor.execute(sql, i, title[0], content[0], ymd[0])
+                insert_key = cursor.lastrowid
+                insert_keys.append({"id" : i, "key" : insert_key})
             conn.commit()
 
             #finance_notification의 flag를 True로 업데이트
