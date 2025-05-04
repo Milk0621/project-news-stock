@@ -25,9 +25,56 @@
 			<canvas id="chart"></canvas>
 		</div>
 		<div class="analyze">
-			<h2>실시간 뉴스 분석</h2>
-			<div>
-				
+			<h2>최근 뉴스 분석</h2>
+			<div class="content-box">
+				<div class="content" onclick="location.href='post.jsp?no=1'">
+					<span>이데일리</span> <span class="date">2025-05-04 21:34:21</span>
+					<h3>신한운용, 'SOL 골드커버드콜 ETF' 첫 월배당…연환산 분배율 4.3%</h3>
+					<div class="keyword">
+						<div>키워드1</div>
+						<div>키워드2</div>
+						<div>키워드3</div>
+						<div>키워드4</div>
+						<div>키워드5</div>
+					</div>
+					<div class="percent">
+						<span>부정 1%</span>
+						<span>중립 98%</span>
+						<span>긍정 1%</span>
+					</div>
+				</div>
+				<div class="content" onclick="location.href='post.jsp?no=1'">
+					<span>이데일리</span> <span class="date">2025-05-04 21:34:21</span>
+					<h3>신한운용, 'SOL 골드커버드콜 ETF' 첫 월배당…연환산 분배율 4.3%</h3>
+					<div class="keyword">
+						<div>키워드1</div>
+						<div>키워드2</div>
+						<div>키워드3</div>
+						<div>키워드4</div>
+						<div>키워드5</div>
+					</div>
+					<div class="percent">
+						<span>부정 1%</span>
+						<span>중립 98%</span>
+						<span>긍정 1%</span>
+					</div>
+				</div>
+				<div class="content" onclick="location.href='post.jsp?no=1'">
+					<span>이데일리</span> <span class="date">2025-05-04 21:34:21</span>
+					<h3>신한운용, 'SOL 골드커버드콜 ETF' 첫 월배당…연환산 분배율 4.3%</h3>
+					<div class="keyword">
+						<div>키워드1</div>
+						<div>키워드2</div>
+						<div>키워드3</div>
+						<div>키워드4</div>
+						<div>키워드5</div>
+					</div>
+					<div class="percent">
+						<span>부정 1%</span>
+						<span>중립 98%</span>
+						<span>긍정 1%</span>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
