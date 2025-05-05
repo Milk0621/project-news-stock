@@ -18,21 +18,22 @@ conn = pymysql.connect(
     )
 cursor = conn.cursor()
 
-for i, _ in df:
+for i, _ in enumerate(content):
     senti_result, keywords, percentages = kobert_keyword(content)
+    print(senti_result, keywords) 
 
     last_row_id = [i+1] * len(keywords)
     print(last_row_id)
-    print(keywords) 
     data = list(zip(i+1, keywords))
-
+    print(data)
     #뉴스가 인서트됨
     #키워드 테이블에 인서트
-    keyword_insert = "insert into keyword(no, keyword) values(%s, %s)"
-    cursor.executemany(keyword_insert,(data))
-    conn.commit()
+    # keyword_insert = "insert into keyword(no, keyword) values(%s, %s)"
+    # cursor.executemany(keyword_insert,(data))
+    # conn.commit()
 
     bad, mid, good = percentages
-    senti_insert = "insert into senti_result(no, bad, mid, good, result) values(%s, %s, %s, %s, %s)"
-    cursor.execute(senti_insert, (i+1, bad, mid, good, senti_result))
-    conn.commit()
+    print(bad, mid, good)
+    # senti_insert = "insert into senti_result(no, bad, mid, good, result) values(%s, %s, %s, %s, %s)"
+    # cursor.execute(senti_insert, (i+1, bad, mid, good, senti_result))
+    # conn.commit()
