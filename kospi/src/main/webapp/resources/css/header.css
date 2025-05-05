@@ -243,3 +243,23 @@ header ul li:hover, #login-btn:hover, #logout-btn:hover{
 .alarm-con{
 	border-bottom: 1px solid #fff;
 }
+.delete_user{
+	display: none;
+	position: fixed;
+	z-index: 1000;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+}
+.delete_content{
+	background-color: #17171c;
+	padding: 50px;
+	border-radius: 10px;
+	width: 514px;
+	text-align: center;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+}

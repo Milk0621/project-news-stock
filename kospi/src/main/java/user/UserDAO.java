@@ -44,14 +44,26 @@ public class UserDAO extends DBManager{
 	}
 	
 	//회원탈퇴
-	public void userDelete(UserVO vo) {
+	public int userDelete(String id, String pw) {
 		driverLoad();
 		DBConnect();
 		
-		String sql = "update user set user_type = 99 where id = '"+vo.getId()+"' and pw = '"+vo.getPw()+"'";
-		executeUpdate(sql);
+		String sql = "select count(*) as cnt from user where id = '"+id+"' and pw = '"+pw+"'";
+		executeQuery(sql);
 		
-		DBDisConnect();
+		if(next()) {
+			int cnt = getInt("cnt");
+			if(cnt == 1) {
+				sql = "update user set user_type = 99 where id = '"+id+"' and pw = '"+pw+"'";
+				executeUpdate(sql);				
+				DBDisConnect();
+				return 1;
+			}else {
+				DBDisConnect();
+				return 0;
+			}
+		}else {
+			return 0;
+		}
 	}
-
 }

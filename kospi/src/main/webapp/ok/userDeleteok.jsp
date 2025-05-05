@@ -3,8 +3,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%
-	String id = request.getParameter("id");
-	String pw = request.getParameter("pw");
+
+	String pw = request.getParameter("pw");	
+	UserVO user = (UserVO)session.getAttribute("user");
+	
+	String id = user.getId();
+
 	
 	if(id == null || pw == null){
 		response.sendRedirect("../home.jsp");
@@ -16,13 +20,15 @@
 		return;
 	}
 	
-	UserVO vo = new UserVO();
 	UserDAO dao = new UserDAO();
 	
-	vo.setId(id);
-	vo.setPw(pw);
+	int result = dao.userDelete(id, pw);
 	
-	dao.userDelete(vo);
+	if (result == 1){
+		session.invalidate();
+		out.println("<script>alert('회원탈퇴가 완료되었습니다.'); location.href='../home.jsp'</script>");
+	}else{
+		out.println("<script>alert('비밀번호가 일치하지 않습니다.'); location.href='../home.jsp'</script>");
+	}
 	
-	response.sendRedirect("../home.jsp");
 %>

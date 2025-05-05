@@ -153,14 +153,27 @@
 		<div class="modal-info" onclick="t()">
 			<span class="close">&times;</span>
 			<h2>내정보</h2>
+			<% if(user != null){ %>
 			<div id="info">
-				<p>아이디 : hong1234</p>
-				<p>이름 : 홍길동</p>
-				<p>닉네임 : hgd</p>
-				<p>이메일 : hong@example.com</p>
+				<p>아이디 : <%= user.getId() %></p>
+				<p>이름 : <%= user.getName() %></p>
+				<p>닉네임 : <%= user.getNick() %></p>
+				<p>이메일 : <%= user.getEmail() %></p>
 			</div>
-			<a href="./ok/userDeleteok.jsp">회원 탈퇴</a>
+			<button class="delete-btn">회원탈퇴</button>
+			<% } %>
 		</div>
+	</div>
+	<div id="delete_user" class="delete_user">
+		<form action="./ok/userDeleteok.jsp" method="post">
+			<div class="delete_content">
+				<h2>회원탈퇴</h2>
+				<p>탈퇴를 원하시면 비밀번호를 입력해주세요.</p>
+				<input type="password" placeholder="현재 비밀번호" name="pw"><br>
+				<button type="submit">확인</button>
+				<button type="button" class="cancel">취소</button>
+			</div>
+		</form>
 	</div>
 </header>
 </body>
@@ -244,6 +257,22 @@ $(document).ready(function () {
         }
     });
 	
+    //회원탈퇴
+    $(".delete-btn").click(function(){
+    	$("#delete_user").fadeIn();
+    });
+    
+    $(".cancel").click(function(){
+    	$("#delete_user").fadeOut();
+    });
+    
+    $(window).click(function(event){
+    	if ($(event.target).is("#delete_user")){
+    		$("#delete_user").fadeOut();
+    	}
+    })
+    
+    
     //날짜
     function getCurrentDateTime() {
         const now = new Date();
