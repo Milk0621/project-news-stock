@@ -25,17 +25,17 @@ driver.get(f"https://search.naver.com/search.naver?where=news&query=%EC%BD%94%EC
 
 dates = datetime.datetime(2025, 4, 21)
 # end = datetime.datetime(2025, 1, 31)
-# dates = dates + datetime.timedelta(days=11) 
+# dates = dates + datetime.timedelta(days=14) 
 
-print(dates) #4월 17일
 
 #언론사, 타이틀, 링크, 날짜, 본문, 이미지
 #이데일리, 아시아경제, 매일경제, 한국경제, 머니투데이
 #1018, 1277, 1009, 1015, 1008
-news_id = ["1009", "1015", "1008"]
+news_id = ["1018", "1277", "1009", "1015", "1008"]
 
 news_data=[]
-for i in range(0, 11):
+for i in range(0, 14):
+    print(dates) 
     month = dates.strftime("%m")
     day = dates.strftime("%d")
     for id in news_id:
