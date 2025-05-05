@@ -1,7 +1,9 @@
 package news;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import db.DBManager;
 
@@ -25,13 +27,66 @@ public class NewsDAO extends DBManager{
 			nvo.setContent(getString("content"));
 			nvo.setImg(getString("img"));
 			nvo.setDate(getString("date"));
-			nvo.setSenti_score(getString("senti_result"));
 			nvo.setNo(getString("no"));
 			list.add(nvo);
 		}
 		
 		DBDisConnect();
 		return list;
+	}
+	
+	//최근 뉴스 분석
+	public List<NewsVO> newsResultList() {
+		driverLoad();
+		DBConnect();
+		
+		String sql = "select n.no, n.name, n.title, n.link, n.content, n.img, n.date, ";
+		sql += "k.keyword, s.good, s.bad, s.mid, s.result ";
+		sql += "from news n ";
+		sql += "left join keyword k on n.no = k.no ";
+		sql += "left join senti_result s on n.no = s.no ";
+		sql += "order by n.date desc ";
+		
+		executeQuery(sql);
+		
+		//중복 없이 저장할 Map 생성
+		//이게 없을시 결과 -> 1 뉴스1 키워드1, 2 뉴스1 키워드2, 3 뉴스1 키워드3
+		Map<String, NewsVO> newsMap = new LinkedHashMap<>();
+		
+		while (next()) {
+	        String no = getString("no"); //현재 뉴스의 고유 번호 가져오기
+	        NewsVO nvo = newsMap.get(no); //no 키 값을 기준으로 이미 저장된 뉴스인지 확인
+
+	        if (nvo == null) {
+	            nvo = new NewsVO();
+	            nvo.setNo(no);
+	            nvo.setName(getString("name"));
+	            nvo.setTitle(getString("title"));
+	            nvo.setLink(getString("link"));
+	            nvo.setContent(getString("content"));
+	            nvo.setImg(getString("img"));
+	            nvo.setDate(getString("date"));
+	            nvo.setKeywords(new ArrayList<>()); //키워드 리스트 초기화(선언)
+
+	            nvo.setGood(getString("good"));
+	            nvo.setBad(getString("bad"));
+	            nvo.setMid(getString("mid"));
+	            nvo.setResult(getString("result"));
+
+	            newsMap.put(no, nvo); //Map에 저장 (중복 방지)
+	        }
+	        
+	        //키워드가 있을 경우 뉴스VO의 키워드 리스트에 추가
+	        String keyword = getString("keyword");
+	        if (keyword != null && !nvo.getKeywords().contains(keyword)) {
+	            nvo.getKeywords().add(keyword);
+	        }
+	    }
+
+	    DBDisConnect();
+	    
+	    //Map에 저장된 NewsVO만 리스트로 변환
+	    return new ArrayList<>(newsMap.values());
 	}
 	
 	//뉴스 상세 조회
@@ -51,7 +106,6 @@ public class NewsDAO extends DBManager{
 			vo.setContent(getString("content"));
 			vo.setImg(getString("img"));
 			vo.setDate(getString("date"));
-			vo.setSenti_score(getString("senti_score"));
 			DBDisConnect();
 			return vo;
 		}else {

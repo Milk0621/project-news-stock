@@ -19,37 +19,45 @@
 	<div class="wrap">
 		<div class="headline">
 			<h1>주요 뉴스</h1>
-			<div class="head_news">
-				<div class="main_news">
-					<div class="bg"></div>
-					<img src="https://cphoto.asiae.co.kr/listimglink/1/2025042109380927353_1745195889.jpg">
-					<div class="txt">
-						<h2>코스피, 실적 앞두고 관망세…2490선 유지</h2>
-						<span>아시아경제</span> · <span>2025-04-21</span>
-					</div>
-				</div>
-				<div class="sub_news">
-				<% for(int i = 0; i < 4; i++){ 
-					NewsVO vo = nlist.get(i);
+			<%	int maxNews = 20; // 4페이지(20개)의 뉴스만 보여줌
+				int slideSize = 5; //한 슬라이드에 뉴스 5개
+				int totalSlides = (int)Math.ceil(Math.min(nlist.size(), maxNews) / (double)slideSize); //전체 슬라이드 개수 (20 / 5 = 4)
+				
+				for(int slide = 0; slide < totalSlides; slide++){
+					int start = slide * slideSize; //현재 슬라이드에 들어갈 뉴스 시작 인덱스
+					int end = Math.min(start + slideSize, maxNews); //Math.min() -> 입력 변수 중 가장 작은 수 반환 -> 전체 뉴스 개수
 				%>
-					<div>
-						<div class="txt">
-							<h2><%=vo.getTitle()%></h2>
-							<span><%=vo.getDate()%></span> · <span><%=vo.getName()%></span>
+					<div class="head_news slide<%=slide+1%>" style='<%= slide == 0 ? "" : "display:none;" %>'>
+						<% NewsVO main = nlist.get(start); %>
+						<div class="main_news" onclick="location.href='post.jsp?no=<%=main.getNo()%>'">
+							<div class="bg"></div>
+							<img src="<%=main.getImg()%>">
+							<div class="txt">
+								<h2><%=main.getTitle() %></h2>
+								<span><%=main.getName() %></span> · <span><%=main.getDate() %></span>
+							</div>
 						</div>
-						<div class="news_img">
-							<img src="<%=vo.getImg()%>">
+						<div class="sub_news">
+						<% for(int i = start + 1; i < end; i++){ 
+							NewsVO vo = nlist.get(i);
+						%>
+							<div onclick="location.href='post.jsp?no<%=vo.getNo() %>'">
+								<div class="txt">
+									<h2><%=vo.getTitle()%></h2>
+									<span><%=vo.getName()%></span> · <span><%=vo.getDate()%></span>
+								</div>
+								<div class="news_img">
+									<img src="<%=vo.getImg()%>">
+								</div>
+							</div>
+						<%} %>
 						</div>
 					</div>
 				<%} %>
-				</div>
-			</div>
 			<ul class="headline_page">
-				<li><button type="button">1</button></li>
-				<li><button type="button">2</button></li>
-				<li><button type="button">3</button></li>
-				<li><button type="button">&lt</button></li>
-				<li><button type="button">&gt</button></li>
+				<% for(int i = 0; i < totalSlides; i++){ %>
+					<li><button type="button" class="slide-btn" data-slide="<%=i+1%>"><%=i+1%></button></li>
+				<%} %>
 			</ul>
 		</div>
 		<div class="news">
@@ -84,6 +92,18 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(document).ready(function() {
+	//상단 뉴스
+	$('.slide-btn').click(function() {
+	    const index = $(this).data('slide'); // 누른 버튼의 슬라이드 번호
+
+	    $('.head_news').hide();             // 모든 슬라이드 감추고
+	    $('.slide' + index).show();          // 선택한 슬라이드만 보여줌
+
+	    $('.slide-btn').removeClass('top_btn');
+	    $(this).addClass('top_btn');          // 클릭된 버튼 강조
+ 	});
+	
+	//하단 뉴스
     filterNews('전체');
 
     $('.media_category button').click(function() {
