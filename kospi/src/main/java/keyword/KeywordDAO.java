@@ -21,8 +21,7 @@ public class KeywordDAO extends DBManager{
 		while(next()) {
 			KeywordVO vo = new KeywordVO();
 			vo.setNo(getString("no"));
-			vo.setDate(getString("date"));
-			vo.setWord_type(getString("word_type"));
+			vo.setKno(getString("kno"));
 			vo.setKeyword(getString("keyword"));
 		}
 		

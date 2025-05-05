@@ -1,3 +1,5 @@
+<%@page import="news.NewsVO"%>
+<%@page import="news.NewsDAO"%>
 <%@page import="com.fasterxml.jackson.databind.ObjectMapper"%>
 <%@page import="java.util.List"%>
 <%@page import="chart.ChartVO"%>
@@ -10,6 +12,9 @@
 	List<ChartVO> clist = dao.chart();
 	ObjectMapper mapper = new ObjectMapper();
 	String jsonText = mapper.writeValueAsString(clist);
+	
+	NewsDAO ndao = new NewsDAO();
+	List<NewsVO> nlist = ndao.newsResultList();
 %>
 <!DOCTYPE html>
 <html>
@@ -27,54 +32,36 @@
 		<div class="analyze">
 			<h2>최근 뉴스 분석</h2>
 			<div class="content-box">
-				<div class="content" onclick="location.href='post.jsp?no=1'">
-					<span>이데일리</span> <span class="date">2025-05-04 21:34:21</span>
-					<h3>신한운용, 'SOL 골드커버드콜 ETF' 첫 월배당…연환산 분배율 4.3%</h3>
+			<% for(int i = 0; i < 3; i++){ 
+				NewsVO vo = nlist.get(i);
+			%>
+				<div class="content" onclick="location.href='post.jsp?no=<%=vo.getNo() %>>'">
+					<span><%=vo.getName() %></span> <span class="date"><%=vo.getDate() %></span>
+					<h3><%=vo.getTitle() %></h3>
 					<div class="keyword">
-						<div>키워드1</div>
-						<div>키워드2</div>
-						<div>키워드3</div>
-						<div>키워드4</div>
-						<div>키워드5</div>
+						<%
+							List<String> keywords = vo.getKeywords();
+							if (keywords != null && !keywords.isEmpty()) {
+								int limit = Math.min(keywords.size(), 4);
+						     	for (int j = 0; j < limit; j++) {
+						        	String keyword = keywords.get(j);
+									if (keyword == null && keyword.trim().isEmpty()){
+										continue;
+									}
+						%>
+						<div><%=keyword %></div>
+						<%
+								} 
+							}
+						%>
 					</div>
 					<div class="percent">
-						<span>부정 1%</span>
-						<span>중립 98%</span>
-						<span>긍정 1%</span>
+						<span>부정 <%=vo.getBad() %>%</span>
+						<span>중립 <%=vo.getMid() %>%</span>
+						<span>긍정 <%=vo.getGood() %>%</span>
 					</div>
 				</div>
-				<div class="content" onclick="location.href='post.jsp?no=1'">
-					<span>이데일리</span> <span class="date">2025-05-04 21:34:21</span>
-					<h3>신한운용, 'SOL 골드커버드콜 ETF' 첫 월배당…연환산 분배율 4.3%</h3>
-					<div class="keyword">
-						<div>키워드1</div>
-						<div>키워드2</div>
-						<div>키워드3</div>
-						<div>키워드4</div>
-						<div>키워드5</div>
-					</div>
-					<div class="percent">
-						<span>부정 1%</span>
-						<span>중립 98%</span>
-						<span>긍정 1%</span>
-					</div>
-				</div>
-				<div class="content" onclick="location.href='post.jsp?no=1'">
-					<span>이데일리</span> <span class="date">2025-05-04 21:34:21</span>
-					<h3>신한운용, 'SOL 골드커버드콜 ETF' 첫 월배당…연환산 분배율 4.3%</h3>
-					<div class="keyword">
-						<div>키워드1</div>
-						<div>키워드2</div>
-						<div>키워드3</div>
-						<div>키워드4</div>
-						<div>키워드5</div>
-					</div>
-					<div class="percent">
-						<span>부정 1%</span>
-						<span>중립 98%</span>
-						<span>긍정 1%</span>
-					</div>
-				</div>
+			<%} %>
 			</div>
 		</div>
 	</div>
