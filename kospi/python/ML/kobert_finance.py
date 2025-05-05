@@ -169,3 +169,5 @@ def kobert_keyword(text):
 # print("\n[CSV 전체 데이터 평가 결과]")
 # print(classification_report(y_true, y_pred, target_names=label_encoder.classes_, digits=4))
 
+
+
