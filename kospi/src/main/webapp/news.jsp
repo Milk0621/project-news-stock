@@ -62,7 +62,7 @@
 						<% for(int i = start + 1; i < end; i++){ 
 							NewsVO vo = nlist.get(i);
 						%>
-							<div onclick="window.open('post.jsp?no<%=vo.getNo() %>')">
+							<div onclick="window.open('post.jsp?no=<%=vo.getNo() %>')">
 								<div class="txt">
 									<h2><%=vo.getTitle()%></h2>
 									<span><%=vo.getName()%></span> · <span><%=vo.getDate()%></span>
