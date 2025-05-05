@@ -97,7 +97,7 @@ body{ background-color: #17171c; }
 }
 .top_btn{
 	background-color: #3d3d47 !important;
-	color: #fff !important;
+	color: #e8e8ea !important;
 }
 
 /* 하단 */
@@ -122,10 +122,10 @@ body{ background-color: #17171c; }
     margin-right: 15px;
 }
 .media_category>button:hover{
-	color:#fff;
+	color:#e8e8ea;
 }
 .media_category>button.active{
-	color:#fff;
+	color:#e8e8ea;
 }
 .content{
 	display: flex;
@@ -147,7 +147,7 @@ body{ background-color: #17171c; }
 }
 .content_txt { margin-left: 10px; }
 .content_txt h2{
-	color: #fff;
+	color: #e8e8ea;
 	font-size: 1.2rem;
 	font-weight: 600;
 	margin-bottom: 8px;
@@ -159,3 +159,6 @@ body{ background-color: #17171c; }
     overflow: hidden;
 }
 .content_txt span{ font-size: 0.8rem; }
+.page-active{
+	color: #e8e8ea;
+}

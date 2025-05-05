@@ -35,6 +35,37 @@ public class NewsDAO extends DBManager{
 		return list;
 	}
 	
+	//언론사별 뉴스 조회
+	public List<NewsVO> pageList(int startNum, int limitSize, String name) {
+		driverLoad();
+		DBConnect();
+		
+		String sql = "select * from news ";
+		if(name != "전체") {
+			sql += "where name = '"+name+"' ";
+		}
+		sql += "order by date desc limit "+startNum+", "+limitSize+"";
+
+		executeQuery(sql);
+		
+		List<NewsVO> list = new ArrayList<NewsVO>();
+		
+		while(next()) {
+			NewsVO nvo = new NewsVO();
+			nvo.setName(getString("name"));
+			nvo.setTitle(getString("title"));
+			nvo.setLink(getString("link"));
+			nvo.setContent(getString("content"));
+			nvo.setImg(getString("img"));
+			nvo.setDate(getString("date"));
+			nvo.setNo(getString("no"));
+			list.add(nvo);
+		}
+		
+		DBDisConnect();
+		return list;
+	}
+	
 	//최근 뉴스 분석
 	public List<NewsVO> newsResultList() {
 		driverLoad();
@@ -113,5 +144,23 @@ public class NewsDAO extends DBManager{
 			return null;
 		}
 		
+	}
+	
+	//뉴스 갯수 조회
+	public int getCount() {
+		driverLoad();
+		DBConnect();
+		
+		String sql = "select count(*) as cnt from news";
+		executeQuery(sql);
+		
+		if(next()) {
+			int count = getInt("cnt");
+			DBDisConnect();
+			return count;
+		}else {
+			DBDisConnect();
+			return 0;
+		}
 	}
 }

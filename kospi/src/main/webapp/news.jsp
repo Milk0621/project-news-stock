@@ -5,8 +5,29 @@
     pageEncoding="UTF-8"%>
 <%@ include file="header.jsp" %>
 <%
+	String pageNum = request.getParameter("page");
+	if(pageNum == null){
+		pageNum = "1";
+	}
+
 	NewsDAO dao = new NewsDAO();
 	List<NewsVO> nlist = dao.newsList();
+	int currentPage = Integer.parseInt(pageNum);
+	int startNum = (currentPage - 1) * 10;
+	int limitperPage = 10;
+	
+	int pageGroupSize = 10;
+	int startPage = ((currentPage - 1) / pageGroupSize) * pageGroupSize + 1;
+	int totalCount = dao.getCount();
+	int totalPage = (int)Math.ceil(totalCount / (double)limitperPage);
+	int endPage = Math.min(startPage + pageGroupSize - 1, totalPage);
+	
+	String company = request.getParameter("company");
+	if(company == null){
+		company = "전체";
+	}
+	
+	List<NewsVO> plist = dao.pageList(startNum, limitperPage, company);
 %>
 <!DOCTYPE html>
 <html>
@@ -29,7 +50,7 @@
 				%>
 					<div class="head_news slide<%=slide+1%>" style='<%= slide == 0 ? "" : "display:none;" %>'>
 						<% NewsVO main = nlist.get(start); %>
-						<div class="main_news" onclick="location.href='post.jsp?no=<%=main.getNo()%>'">
+						<div class="main_news" onclick="window.open('post.jsp?no=<%=main.getNo()%>')">
 							<div class="bg"></div>
 							<img src="<%=main.getImg()%>">
 							<div class="txt">
@@ -41,7 +62,7 @@
 						<% for(int i = start + 1; i < end; i++){ 
 							NewsVO vo = nlist.get(i);
 						%>
-							<div onclick="location.href='post.jsp?no<%=vo.getNo() %>'">
+							<div onclick="window.open('post.jsp?no<%=vo.getNo() %>')">
 								<div class="txt">
 									<h2><%=vo.getTitle()%></h2>
 									<span><%=vo.getName()%></span> · <span><%=vo.getDate()%></span>
@@ -64,17 +85,17 @@
 			<h1>언론사별 뉴스</h1>
 			<div class="media_news">
 				<div class="media_category">
-				    <button data-name="전체">전체</button>
-				    <button data-name="이데일리">이데일리</button>
-				    <button data-name="아시아경제">아시아경제</button>
-				    <button data-name="매일경제">매일경제</button>
-				    <button data-name="한국경제">한국경제</button>
-				    <button data-name="머니투데이">머니투데이</button>
+				    <button onclick='location.href="news.jsp?page=<%=currentPage %>&company=전체"' data-name="전체">전체</button>
+				    <button onclick='location.href="news.jsp?page=<%=currentPage %>&company=이데일리"' data-name="이데일리">이데일리</button>
+				    <button onclick='location.href="news.jsp?page=<%=currentPage %>&company=아시아경제"' data-name="아시아경제">아시아경제</button>
+				    <button onclick='location.href="news.jsp?page=<%=currentPage %>&company=매일경제"' data-name="매일경제">매일경제</button>
+				    <button onclick='location.href="news.jsp?page=<%=currentPage %>&company=한국경제"' data-name="한국경제">한국경제</button>
+				    <button onclick='location.href="news.jsp?page=<%=currentPage %>&company=머니투데이"' data-name="머니투데이">머니투데이</button>
 				</div>
-				<% for(int i = 0; i < nlist.size(); i++){ 
-					NewsVO vo = nlist.get(i);
+				<% for(int i = 0; i < plist.size(); i++){ 
+					NewsVO vo = plist.get(i);
 				%>
-					<div class="content" data-name="<%=vo.getName()%>" onclick="location.href='post.jsp?no=<%=vo.getNo()%>'">
+					<div class="content" data-name="<%=vo.getName()%>" onclick="window.open('post.jsp?no=<%=vo.getNo()%>')">
 				        <div class="content_img">
 				            <img src="<%=vo.getImg()%>">
 				        </div>
@@ -85,6 +106,23 @@
 				        </div>
 				    </div>
 				<%} %>
+				<div class="page">
+					<% if(currentPage  > 1){ %>
+						<a href="news.jsp?page=1&company=<%=company %>">&lt;&lt;</a>
+						<a href="news.jsp?page=<%=currentPage - 1 %>&company=<%=company %>">&lt;</a>
+					<% } %>
+					<% for(int i = startPage; i <= endPage; i++){ %>
+					<% 		if(i == currentPage){ %>
+								<a class="page-active" href="news.jsp?page=<%= i %>&company=<%=company %>"><%= i %></a>
+						<% }else{ %>
+							<a href="news.jsp?page=<%= i %>&company=<%=company %>"><%= i %></a>
+						<% } %>
+					<% } %>
+					<% if(currentPage < totalPage) {%>
+						<a href="news.jsp?page=<%=currentPage + 1 %>&company=<%=company %>">&gt;</a>
+						<a href="news.jsp?page=<%=totalPage %>&company=<%=company %>">&gt;&gt;</a>
+					<% } %>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -104,7 +142,7 @@ $(document).ready(function() {
  	});
 	
 	//하단 뉴스
-    filterNews('전체');
+   /*  filterNews('전체');
 
     $('.media_category button').click(function() {
         let mediaName = $(this).data('name'); // 버튼의 data-name 가져오기
@@ -113,10 +151,10 @@ $(document).ready(function() {
         // 클릭된 버튼만 active, 나머지는 제거
         $('.media_category button').removeClass('active');
         $(this).addClass('active');
-    });
+    }); */
 });
 
-function filterNews(mediaName) {
+/* function filterNews(mediaName) {
     $('.content').each(function() {
         let name = $(this).data('name');
         if (mediaName === '전체' || name === mediaName) {
@@ -125,6 +163,6 @@ function filterNews(mediaName) {
             $(this).hide();
         }
     });
-}
+} */
 </script>
 </html>
