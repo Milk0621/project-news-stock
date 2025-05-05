@@ -21,7 +21,7 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>Home</title>
+	<title>KOSPI NEWS</title>
 	<link rel="stylesheet" href="./resources/css/header.css"></link>
 	<script type="text/javascript" src="./resources/js/jquery-3.7.1.js"></script>
 	<script>
@@ -42,7 +42,6 @@
 		<li onclick="location.href='home.jsp'">홈</li>
 		<li onclick="location.href='news.jsp'">뉴스</li>
 		<li onclick="location.href='dates.jsp'">날짜별 분석</li>
-		<li onclick="location.href='model.jsp'">모델 평가</li>
 	</ul>
 	<div class="icon">
 		<% if(user == null){ %>
