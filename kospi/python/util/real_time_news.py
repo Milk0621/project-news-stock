@@ -456,8 +456,6 @@ def fun(news):
                 #단어 인서트 안해도됨
                 pass
 
-    df2 = pd.DataFrame(news_data)
-    df2.to_csv(f"./{news}-{date.today()}.csv", index=False)
     print(f"{news} 저장!")
 
     cursor.close()

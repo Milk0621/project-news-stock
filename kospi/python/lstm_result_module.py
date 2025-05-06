@@ -38,19 +38,6 @@ def job():
     result = f"{result:.2f}"
     print(result)
 
-    #예측값 저장 (날짜 / 예측 / 손실)
-    # today = date.today()
-    # # tomorrow = today + timedelta(days=1)
-    # result = result[0][0]
-    # loss = loss[0]
-    # df = [{
-    #     "date" : today,
-    #     "model" : "LSTM",
-    #     "result" : result,
-    #     "loss" : loss
-    # }]
-    # print('내일 주가 알림', f'내일 코스피 지수는 약 {result} 입니다.')
-
     conn = pymysql.connect(
         host="158.247.211.92",
         user="milk",
@@ -67,6 +54,8 @@ def job():
     cursor.execute(sql, ("2025-05-02", result, loss))
     
     conn.commit()
+
+    #주가지수 DB에서 꺼내와서 csv에 추가 
 
 #주말 함수
 def is_weekend(date):
