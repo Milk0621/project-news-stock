@@ -2,6 +2,7 @@ import tensorflow as tf
 import numpy as np
 from transformers import BertTokenizer, TFBertForSequenceClassification
 from collections import defaultdict
+import re
 
 def kobert_keyword(text):
     # 경로
@@ -61,34 +62,41 @@ def kobert_keyword(text):
     
     # 토큰 시각화
     tokens = tokenizer.convert_ids_to_tokens(inputs["input_ids"][0].numpy())
-    def merge_wordpieces(tokens:str, scores):
+    def merge_wordpieces(tokens, scores):
         merged_tokens = []
         merged_scores = []
         current_word = ""
         current_score = 0.0
         count = 0
 
+        #추가 정규표현식으로 특수문자 제거
+        pattern = re.compile(r"^[ㄱ-ㅎ가-힣a-zA-Z0-9]+$")
+
         for token, score in zip(tokens, scores):
             if token in ["[PAD]", "[CLS]", "[SEP]"]:
                 continue
-            
-            if not token.isalnum():
+
+            token_clean = token.replace("##", "")
+
+            # 특수문자 제거
+            if not pattern.match(token_clean):
                 continue
 
             if token.startswith("##"):
-                current_word += token[2:]
+                current_word += token_clean
             else:
                 if current_word:
-                    merged_tokens.append(current_word)
-                    merged_scores.append(current_score / max(count, 1))
-                current_word = token
+                    if len(current_word) >= 2:
+                        merged_tokens.append(current_word)
+                        merged_scores.append(current_score / max(count, 1))
+                current_word = token_clean
                 current_score = 0.0
                 count = 0
 
             current_score += score
             count += 1
 
-        if current_word:
+        if current_word and len(current_word) >= 2:
             merged_tokens.append(current_word)
             merged_scores.append(current_score / max(count, 1))
 
@@ -109,7 +117,7 @@ def kobert_keyword(text):
         return token
 
     filtered_results = [
-        (clean_token(merged_tokens[i]), merged_scores[i])
+        (merged_tokens[i], merged_scores[i])
         for i in top_indices
         #if i.isalpa()
     ]
@@ -134,6 +142,8 @@ def kobert_keyword(text):
 
     if not keyword:
         return senti_result, [""], percentages_rounded
+    else :
+        return senti_result, keyword, percentages_rounded
     #('부정', [], [0.1, 0.5, 0.4])
 
 #csv 데이터를 이용한 검증
