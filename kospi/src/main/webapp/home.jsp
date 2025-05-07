@@ -45,11 +45,11 @@
 								int limit = Math.min(keywords.size(), 4);
 						     	for (int j = 0; j < limit; j++) {
 						        	String keyword = keywords.get(j);
-									if (keyword == null && keyword.trim().isEmpty()){
+									if (keyword == null || keyword.trim().isEmpty()){
 										continue;
 									}
 						%>
-						<div><%=keyword %></div>
+									<div><%=keyword %></div>
 						<%
 								} 
 							}

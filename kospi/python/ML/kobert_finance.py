@@ -13,7 +13,7 @@ def kobert_keyword(text):
 
     model = TFBertForSequenceClassification.from_pretrained(MODEL_PATH, output_attentions=True)
     #사전학습된 모델 불러오기
-
+    print(text)
     text = text.replace("\n", " ").replace("\r", "").strip()
 
     # 토큰화
@@ -25,7 +25,7 @@ def kobert_keyword(text):
         padding="max_length"
     )
 
-    print(inputs)
+    #print(inputs)
 
     # 예측 수행 (training=False 필수)
     outputs = model(
@@ -35,7 +35,7 @@ def kobert_keyword(text):
         training=False
     )
 
-    print(outputs)
+    #print(outputs)
 
     # 확률 계산 및 예측 클래스
     probs = tf.nn.softmax(outputs.logits, axis=-1).numpy()[0]
@@ -44,7 +44,7 @@ def kobert_keyword(text):
     percentages_rounded = np.round(percentages, 2)
     #[0.1, 0.5, 0.4]
     pred_class = np.argmax(probs)
-    print(percentages_rounded)
+    #print(percentages_rounded)
     #1
 
 
@@ -61,7 +61,7 @@ def kobert_keyword(text):
     
     # 토큰 시각화
     tokens = tokenizer.convert_ids_to_tokens(inputs["input_ids"][0].numpy())
-    def merge_wordpieces(tokens, scores):
+    def merge_wordpieces(tokens:str, scores):
         merged_tokens = []
         merged_scores = []
         current_word = ""
@@ -70,6 +70,9 @@ def kobert_keyword(text):
 
         for token, score in zip(tokens, scores):
             if token in ["[PAD]", "[CLS]", "[SEP]"]:
+                continue
+            
+            if not token.isalnum():
                 continue
 
             if token.startswith("##"):
@@ -95,6 +98,7 @@ def kobert_keyword(text):
     
     top_n = 10
     top_indices = np.argsort(merged_scores)[-top_n:][::-1]
+    print(top_indices)
 
     postpositions = ["을", "를", "에", "의", "는", "가", "이", "은", "와", "과", "에서", "에게", "께"]
 
@@ -107,25 +111,30 @@ def kobert_keyword(text):
     filtered_results = [
         (clean_token(merged_tokens[i]), merged_scores[i])
         for i in top_indices
-        if merged_tokens[i].isalpha()
+        #if i.isalpa()
     ]
     
     agg_scores = defaultdict(list)
     for token, score in filtered_results:
         agg_scores[token].append(score)
 
+    print(agg_scores)
+
     final_top = sorted(
         [(token, np.mean(scores)) for token, scores in agg_scores.items()],
         key=lambda x: x[1], reverse=True
     )[:5]
+    print(len(final_top))
     
-    print("\n[후처리된 단어 기준 어텐션 상위 10개]")
+    print("\n[후처리된 단어 기준 어텐션 상위 5개]")
     keyword = []
     for token, score in final_top:
         print(f"{token} (평균 가중치: {score:.4f})")
         keyword.append(token)
 
-    return senti_result, keyword, percentages_rounded
+    if not keyword:
+        return senti_result, [""], percentages_rounded
+    #('부정', [], [0.1, 0.5, 0.4])
 
 #csv 데이터를 이용한 검증
 # import pandas as pd

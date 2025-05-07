@@ -157,10 +157,12 @@ def fun(news):
             if cursor.lastrowid > 0:
                 #cursor.lastrowid = 114 or 115 일반 숫자
                 #keyword = [1,2,3] 리스트
+                content = content + title
+                time.sleep(2)
                 senti_result, keywords, percentages = kobert_keyword(content)
 
                 print(cursor.lastrowid)
-
+                print(len(keywords))
                 last_row_id = [cursor.lastrowid] * len(keywords)
                 print(last_row_id)
                 print(keywords) 
@@ -248,6 +250,8 @@ def fun(news):
             if cursor.lastrowid > 0:
                 #cursor.lastrowid = 114 or 115 일반 숫자
                 #keyword = [1,2,3] 리스트
+                content = content + title
+
                 senti_result, keywords, percentages = kobert_keyword(con_text)
 
                 print(cursor.lastrowid)
@@ -331,6 +335,7 @@ def fun(news):
             if cursor.lastrowid > 0:
                 #cursor.lastrowid = 114 or 115 일반 숫자
                 #keyword = [1,2,3] 리스트
+                content = content + title
                 senti_result, keywords, percentages = kobert_keyword(con_text)
 
                 print(cursor.lastrowid)
@@ -424,6 +429,7 @@ def fun(news):
             if cursor.lastrowid > 0:
                 #cursor.lastrowid = 114 or 115 일반 숫자
                 #keyword = [1,2,3] 리스트
+                content = content + title
                 senti_result, keywords, percentages = kobert_keyword(content)
 
                 print(cursor.lastrowid)
@@ -522,6 +528,7 @@ def fun(news):
             if cursor.lastrowid > 0:
                 #cursor.lastrowid = 114 or 115 일반 숫자
                 #keyword = [1,2,3] 리스트
+                content = content + title
                 senti_result, keywords, percentages = kobert_keyword(content)
 
                 print(cursor.lastrowid)
