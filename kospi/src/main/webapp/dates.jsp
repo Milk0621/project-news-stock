@@ -1,3 +1,6 @@
+<%@page import="com.fasterxml.jackson.databind.ObjectMapper"%>
+<%@page import="chart.ChartVO"%>
+<%@page import="chart.ChartDAO"%>
 <%@page import="dates.DatesVO"%>
 <%@page import="dates.DatesDAO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -6,6 +9,11 @@
 <%
 	DatesDAO dao = new DatesDAO();
 	List<DatesVO> dateAnalysisList = dao.getDateAnalysisData();
+	
+	ChartDAO chartdao = new ChartDAO();
+	List<ChartVO> clist = chartdao.close();
+	ObjectMapper mapper = new ObjectMapper();
+	String jsonText = mapper.writeValueAsString(clist);
 %>
 <!DOCTYPE html>
 <html>
@@ -17,7 +25,7 @@
 <body>
 	<div class="wrap">
 		<div class="graph">
-			<canvas></canvas>
+			<canvas id="chart" width="1200"></canvas>
 		</div>
 		<div class="datas">
 			<table>
@@ -46,4 +54,37 @@
 		</div>
 	</div>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script type="text/javascript">
+let chartData = <%= jsonText %>;
+console.log(chartData);
+
+const labels = chartData.map(x => x.date);
+const prices = chartData.map(x => Number(x.price));
+console.log(labels);
+
+const ctx = document.getElementById("chart").getContext('2d');
+new Chart(ctx, {
+    type: "line",
+    data: {
+        labels: labels,
+        datasets: [{
+            label: "뉴스 긍정 비율에 따른 코스피 종가",
+            data: prices,
+            borderWidth: 2,
+            pointRadius: 2,
+            tension: 0.2
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: false
+            }
+        }
+    }
+});
+</script>
 </html>

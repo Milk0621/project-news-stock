@@ -36,4 +36,33 @@ public class ChartDAO extends DBManager{
 		DBDisConnect();
 		return list;
 	}
+	
+	//차트 일별 종가 조회
+	public List<ChartVO> close(){
+		List<ChartVO> list = new ArrayList<ChartVO>();
+		driverLoad();
+		DBConnect();
+		
+		String sql = "SELECT c.date, c.price ";
+		sql += "FROM chart c ";
+		sql += "INNER JOIN (";
+		sql += "SELECT DATE(date) AS day, MAX(date) AS max_date ";
+		sql += "FROM chart ";
+		sql += "GROUP BY DATE(date)";
+		sql += ") last_per_day ";
+		sql += "ON DATE(c.date) = last_per_day.day AND c.date = last_per_day.max_date ";
+		sql += "ORDER BY c.date;";
+		
+		executeQuery(sql);
+		
+		while(next()) {
+			ChartVO vo = new ChartVO();
+			vo.setDate(getString("date"));
+			vo.setPrice(getString("price"));
+			list.add(vo);
+		}
+		
+		DBDisConnect();
+		return list;
+	}
 }
