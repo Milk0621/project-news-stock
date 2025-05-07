@@ -68,6 +68,13 @@ header ul li:hover, #login-btn:hover, #logout-btn:hover{
 .img-box:hover img:last-child{
 	display: inline-block;
 }
+.dot{
+	display: block;
+	width: 4px;
+	height: 4px;
+	border-radius: 2px;
+	background-color: red;
+}
 .modal {
     display: none;
     position: fixed;

@@ -3,19 +3,22 @@ import pandas as pd
 import pymysql
 import time
 import keras
-from datetime import date
+from datetime import date, timedelta
 from sklearn.preprocessing import MinMaxScaler
 from holidayskr import is_holiday
+import yfinance as yf
 
 print(__name__)
 #현재 파일에서 실행되면 __main__
 #다른 파일에서 임포트하면 lstm_result_module
+
 
 #매일 오후 4시반에 lstm 모델을 이용해 다음날 코스피 지수를 예측하는 함수
 def job():
     #주말이랑, 공휴일 제외
     #오늘
     today = date.today()
+    tomorrow = today + timedelta(days=1)
     #평일
     if is_weekend(today):
         #공휴일
@@ -24,9 +27,30 @@ def job():
             return
     else:
         return
+    #주가지수 finance으로 꺼내와서 csv에 추가
+    data = yf.download("^KS11", period="1d", interval="60M")
+
+    print(data)
+    df = pd.read_csv("./datas/kospi(60m).csv")
+
+    if isinstance(data.columns, pd.MultiIndex):  # 멀티인덱스일 경우
+        data.columns = data.columns.get_level_values(0)  # 예: ^KS11만 추출
+    data = data.reset_index()  # Datetime을 일반 열로 변환
+    data = data.rename(columns={"Datetime": "Date"})  # 열 이름 통일
+
+    # 4. 열 순서 정리
+    data = data[["Close", "High", "Low", "Open", "Volume", "Date"]]
+
+    # 5. 기존 CSV와 합치기
+    combined_df = pd.concat([df, data], ignore_index=True)
+    print(combined_df)
+
+    combined_df.to_csv("./datas/kospi(60m).csv", index=False)
+    
+    
     #모델 로드해서 결과치 뽑아내기
     model = keras.models.load_model("./model/LSTM_KOSPI.keras")
-    kospi_df = pd.read_csv("./datas/training/kospi(60m).csv")
+    kospi_df = pd.read_csv("./datas/kospi(60m).csv")
     kospi = kospi_df[["Close", "Volume", "High", "Low", "Open"]]
     scaler = MinMaxScaler(feature_range=(0,1))
     data_scaled = scaler.fit_transform(kospi)
@@ -62,17 +86,16 @@ def job():
     conn.commit()
     
     sql = "insert into predict(date, predict, loss)values(%s, %s, %s)"
-    cursor.execute(sql, ("2025-05-02", result, loss))
+    cursor.execute(sql, (tomorrow, result, loss))
     
     conn.commit()
 
-    #주가지수 DB에서 꺼내와서 csv에 추가 
 
 #주말 함수
 def is_weekend(date):
     return date.weekday() < 5
 
-schedule.every().day.at("16:00").do(job)
+schedule.every().day.at("17:40").do(job)
     
 while True:
     schedule.run_pending()

@@ -16,6 +16,8 @@
 	String userId = user != null ? user.getId() : "";
 	List<AlarmVO> alist = adao.alarmList(userId);
 	
+	int alarmCheck = adao.alarmCheck(userId);
+	
 %>
 <!DOCTYPE html>
 <html>
@@ -52,6 +54,9 @@
 				<img src="./resources/img/chat_hover.png">
 			</div>
 			<div class="img-box" id="alarm-icon">
+				<% if(alarmCheck > 0){ %>
+					<div class="dot"></div>
+				<%} %>
 				<img src="./resources/img/alram.png">
 				<img src="./resources/img/alram_hover.png">
 			</div>
@@ -291,7 +296,7 @@ $(document).ready(function () {
 			success : function(result){
 				console.log(result);
 				if(result.trim() == "success"){
-					$(".alarm-dot").fadeOut();
+					$(".dot").css("display", "none");
 				};
 			},
 			error : function(){

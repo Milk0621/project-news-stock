@@ -10,7 +10,9 @@
 	}
 	
 	AlarmDAO dao = new AlarmDAO();
-	dao.alarmCheck(id);
+	dao.alarmChecked(id);
 	
+	
+	out.print("success");
 	response.sendRedirect("../home.jsp");
 %>

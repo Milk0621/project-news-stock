@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 
 #데이터 불러오기
-kospi_df = pd.read_csv("./datas/training/kospi.csv")
+kospi_df = pd.read_csv("./datas/kospi(60m).csv")
 
 #선형회귀 모델에 문자열 값이 들어갈 수 없으므로
 #날짜를 datetime 형식으로 변환
@@ -42,7 +42,7 @@ print("Test score:", lr.score(test_input, test_target))
 
 y_hat = lr.predict(test_input)
 y = test_target
-#mean_squared_error : 머신러닝 손실률 계산하는 애
+#mean_squared_error : 머신러닝 손실률 계산
 loss = mean_squared_error(y, y_hat)
 print(loss)
 
