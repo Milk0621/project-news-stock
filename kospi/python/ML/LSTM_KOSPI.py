@@ -18,19 +18,9 @@ data_scaled = scaler.fit_transform(close)
 
 ans_scaler = MinMaxScaler(feature_range=(0,1))
 close_scaled = ans_scaler.fit_transform(close["Close"].to_numpy().reshape(-1, 1))
-#[2118, 2157, 2165] -> #[[2118  2157  2165]]
 
 X = data_scaled.reshape(1, data_scaled.shape[0], data_scaled.shape[1])
-
-# X = X[:, :-5, :]
-# pred_data = X[:, -5:, :]
-
 y = np.array([data_scaled[-1, 0]])
-#[[1227]]
-# print(pred_data)
-
-# print(X.shape)
-# print(data_scaled.shape)
 
 import keras
 
@@ -49,11 +39,7 @@ model.add(dropout)
 model.add(output)
 
 model.compile(loss="mse", metrics=["mae"], optimizer="adam")
-
-#print(model.summary())
-
 model.fit(X, y, epochs=40, verbose=1)
-#[0.5735805  0.06647381 0.56756122 0.56978139]]]
 
 model.save("./model/LSTM_KOSPI.keras")
 

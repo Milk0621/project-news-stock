@@ -32,4 +32,4 @@ data = data[["Close", "High", "Low", "Open", "Volume", "Date"]]
 combined_df = pd.concat([df, data], ignore_index=True)
 print(combined_df)
 
-combined_df.to_csv("./asdasdasd.csv", index=False)
+combined_df.to_csv("./datas/kospi(60m).csv", index=False)

@@ -51,18 +51,15 @@
 		<% }else if(user != null){ %>
 			<div class="img-box" id="chat-icon">
 				<img src="./resources/img/chat.png">
-				<img src="./resources/img/chat_hover.png">
 			</div>
 			<div class="img-box" id="alarm-icon">
 				<% if(alarmCheck > 0){ %>
 					<div class="dot"></div>
 				<%} %>
 				<img src="./resources/img/alram.png">
-				<img src="./resources/img/alram_hover.png">
 			</div>
 			<div class="img-box" id="info-icon">
 				<img src="./resources/img/user.png">
-				<img src="./resources/img/user_hover.png">
 			</div>
 			<span id="logout-btn" onclick="location.href='./ok/logout.jsp'">로그아웃</span>
 		<% } %>
@@ -286,23 +283,25 @@ $(document).ready(function () {
         return { date, time };
     }
 	
-    $("#alarm-close").on("click", function() {
-		$.ajax({
-			url : "./ok/alarmCheckok.jsp",
-			type : "post",
-			data : {
-				id : userId
-			},
-			success : function(result){
-				console.log(result);
-				if(result.trim() == "success"){
-					$(".dot").css("display", "none");
-				};
-			},
-			error : function(){
-				console.log("에러 발생");
-			}
-		});
+    $("#alarm-icon").on("click", function() {
+    	if(<%=alarmCheck %> > 0){
+			$.ajax({
+				url : "./ok/alarmCheckok.jsp",
+				type : "post",
+				data : {
+					id : userId
+				},
+				success : function(result){
+					console.log(result);
+					if(result.trim() == "success"){
+						$(".dot").css("display", "none");
+					};
+				},
+				error : function(){
+					console.log("에러 발생");
+				}
+			});
+    	}
     });
     
     //챗
@@ -326,16 +325,20 @@ $(document).ready(function () {
 		const msg = JSON.parse(event.data);
 		console.log("수신 메시지:", msg);
 		
-		if(msg.type && msg.type == "stock"){
-			console.log(msg.message.price)
-		}else if(msg.type && msg.type == "noti"){
+		if(msg.type && msg.type == "noti"){
 			//알림창 갱신
-			for(let i = 0; i < msg.keys.length; i++){
-				if(msg.keys[i].id == "나"){
-					//알림창 표시
-					no = msg.keys[i].key
-				}
-			}
+			console.log(msg)
+			$("#alarm-icon").prepend('<div class="dot"></div>')
+			
+			let alarmHtml = "";
+			alarmHtml += '<div class="alarm-con">'
+			alarmHtml += '<p>'+msg.message+'</p>'
+			alarmHtml += '<p>'+msg.content+'</p>'
+			alarmHtml += '<p>'+msg.date+'</p>'
+			alarmHtml += '</div>'
+			
+			$("#alarms").prepend(alarmHtml)
+			
 		}else if(msg.type == "message"){
 			let messageEl = "";
 			if(msg.user == userId){
@@ -411,5 +414,24 @@ $(document).ready(function () {
 	});
 	
 });
+
+$("#chat-icon > img").hover(function(){
+    $(this).attr('src','./resources/img/chat_hover.png');
+}, function() {
+    $(this).attr('src','./resources/img/chat.png');
+});
+
+$("#alarm-icon > img").hover(function(){
+    $(this).attr('src','./resources/img/alram_hover.png');
+}, function() {
+    $(this).attr('src','./resources/img/alram.png');
+});
+
+$("#info-icon > img").hover(function(){
+    $(this).attr('src','./resources/img/user_hover.png');
+}, function() {
+    $(this).attr('src','./resources/img/user.png');
+});
+
 </script>
 </html>

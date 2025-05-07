@@ -4,6 +4,9 @@ import json
 import pymysql
 #import lstm_result_module
 from datetime import datetime
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from util.kiwoom import fn_ka20001, fn_au10001
 #pip install websockets
 # 연결된 클라이언트 목록
@@ -97,6 +100,7 @@ async def test():
 async def broadcast():
     while True:
         await asyncio.sleep(5)
+        print("bloadcast works")
         #1. 미리 4시에 스케줄을 도는 함수를 만들어놓고 여기서 실행
         #2. 스케줄러가 돌고 난 뒤에 데이터베이스 인서트 -> finance_notification
         #2-2 매 2초마다 finance_notification 조회 -> #select * from finance_notification where flag = false
@@ -162,7 +166,9 @@ async def broadcast():
                 message = {
                     "user" : "server",
                     "type" : "noti",
-                    "message" : result["title"]
+                    "message" : result["title"],
+                    "content" : result["content"],
+                    "date" : today.strftime("%Y-%m-%d")
                 }
                 message =  json.dumps(message)
                 await connection.send(message)

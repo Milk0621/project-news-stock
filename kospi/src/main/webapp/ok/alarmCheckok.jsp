@@ -14,5 +14,4 @@
 	
 	
 	out.print("success");
-	response.sendRedirect("../home.jsp");
 %>

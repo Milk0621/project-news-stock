@@ -59,15 +59,7 @@ header ul li:hover, #login-btn:hover, #logout-btn:hover{
     align-items: center;
 	gap: 20px;
 }
-.img-box img:last-child{
-	display: none;
-}
-.img-box:hover img:first-child{
-	display: none;
-}
-.img-box:hover img:last-child{
-	display: inline-block;
-}
+
 .dot{
 	display: block;
 	width: 4px;
