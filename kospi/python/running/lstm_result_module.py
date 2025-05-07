@@ -18,7 +18,6 @@ def job():
     #주말이랑, 공휴일 제외
     #오늘
     today = date.today()
-    tomorrow = today + timedelta(days=1)
     #평일
     if is_weekend(today):
         #공휴일
@@ -86,7 +85,7 @@ def job():
     conn.commit()
     
     sql = "insert into predict(date, predict, loss)values(%s, %s, %s)"
-    cursor.execute(sql, (tomorrow, result, loss))
+    cursor.execute(sql, (today, result, loss))
     
     conn.commit()
 
