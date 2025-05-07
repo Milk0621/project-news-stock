@@ -17,20 +17,20 @@
 <body>
 	<div class="wrap">
 		<div class="graph">
-			
+			<canvas></canvas>
 		</div>
 		<div class="datas">
 			<table>
 				<tr class="labels">
 					<th>날짜</th>
 					<th>종가</th>
-					<th>예측값</th>
+					<th>예측값(익일)</th>
 					<th>뉴스분석 결과</th>
 					<th>주요 키워드</th>
 				</tr>
 				<tr class="margin"></tr>
 				<%
-					for(int i = 0; i < dateAnalysisList.size() ; i ++){
+					for(int i = 0; i < dateAnalysisList.size(); i ++){
 						%>
 							<tr class="data">
 								<td><%= dateAnalysisList.get(i).getDates() %></td>
