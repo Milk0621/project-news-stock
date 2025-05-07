@@ -1,5 +1,7 @@
-# -*- coding: utf-8 -*-
-
+# -*- coimport sys
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from ML.kobert_finance import kobert_keyword
 
 text = """
