@@ -61,16 +61,16 @@ def job():
 def is_weekend(date):
     return date.weekday() < 5
 
-# schedule.every().day.at("17:13").do(job)
-
-# if is_weekend(today):
-#     #평일
-#     if is_holiday(str(today)):
-#         print("평일 공휴일 안돌아감")
-#     else:
-#         while True:
-#             schedule.run_pending()
-#             time.sleep(1)
-# else:
-#     #주말
-#     print("주말 안돌아감")
+schedule.every().day.at("16:00").do(job)
+today = date.today()
+if is_weekend(today):
+    #평일
+    if is_holiday(str(today)):
+        print("평일 공휴일 안돌아감")
+    else:
+        while True:
+            schedule.run_pending()
+            time.sleep(1)
+else:
+    #주말
+    print("주말 안돌아감")

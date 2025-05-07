@@ -84,6 +84,23 @@ def fun(news):
             time.sleep(2)
             
             title = driver.title
+
+            try:
+                date = driver.find_element(By.CSS_SELECTOR, ".dates ul li p:first-child").text
+                date = date.replace("등록", "")
+                if "오후" in date:
+                    period = "PM"
+                    date = date.replace("오후", "")
+                elif "오전" in date:
+                    period = "AM"
+                    date = date.replace("오전", "")
+                date = date.strip()
+                date = f"{date} {period}"
+                print(date)
+            except :
+                print("이데일리 날짜 패스")
+                pass
+            
             news_body = driver.find_element(By.CLASS_NAME, "news_body")
             inner_html = news_body.get_attribute("innerHTML")
 
@@ -109,13 +126,22 @@ def fun(news):
             driver.close()
             driver.switch_to.window(driver.window_handles[0])
             
+            date = date.replace(".", "-")
+            secondExists = date.split(":")
+            if len(secondExists) <= 2 :
+                date += ":00"
+            try:
+                dt = datetime.datetime.strptime(date, "%Y-%m-%d %I:%M:%S %p")
+            except:
+                dt = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
+
             dict = {
                 "name" : news,
                 "title" : title.strip(),
                 "link" : link.strip(),
                 "content" : content.strip(),
                 "img" : img.strip(),
-                "date" : ymd
+                "date" : dt
             }
             
             news_data.append(dict)
@@ -124,7 +150,7 @@ def fun(news):
             (
                 select name, title from news where name = %s and title = %s
             )"""
-            cursor.execute(news_insert, (news, dict["title"], dict["link"], dict["content"], dict["img"], ymd, news, dict["title"]))
+            cursor.execute(news_insert, (news, dict["title"], dict["link"], dict["content"], dict["img"], dt, news, dict["title"]))
 
             conn.commit()
 
@@ -167,6 +193,15 @@ def fun(news):
             time.sleep(2)
             
             title = driver.title
+
+            try:
+                date = driver.find_element(By.CSS_SELECTOR, ".date_box p").text
+                date = date.replace("입력", "")
+                print(date)
+            except:
+                print("아시아경제 날짜 패스")
+                pass
+            
             div = driver.find_element(By.CLASS_NAME, "article")
             content = div.find_elements(By.CSS_SELECTOR, "p")
             con_text = " ".join([p.text.strip().replace("\n", " ") for p in content])
@@ -182,13 +217,22 @@ def fun(news):
             driver.close()
             driver.switch_to.window(driver.window_handles[0])
             
+            date = date.replace(".", "-")
+            secondExists = date.split(":")
+            if len(secondExists) <= 2 :
+                date += ":00"
+            try:
+                dt = datetime.datetime.strptime(date, "%Y-%m-%d %I:%M:%S %p")
+            except:
+                dt = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
+
             dict = {
                 "name" : news,
                 "title" : title.strip(),
                 "link" : link.strip(),
                 "content" : con_text.strip(),
                 "img" : img.strip(),
-                "date" : ymd
+                "date" : dt
             }
             
             news_data.append(dict)
@@ -197,7 +241,7 @@ def fun(news):
             (
                 select name, title from news where name = %s and title = %s
             )"""
-            cursor.execute(news_insert, (news, dict["title"], dict["link"], dict["content"], dict["img"], ymd, news, dict["title"]))
+            cursor.execute(news_insert, (news, dict["title"], dict["link"], dict["content"], dict["img"], dt, news, dict["title"]))
 
             conn.commit()
 
@@ -237,6 +281,12 @@ def fun(news):
             time.sleep(2)
             
             title = driver.title
+
+            try:
+                date = driver.find_element(By.CSS_SELECTOR, ".time_area dl dd").text
+            except:
+                print("매일경제 날짜 패스")
+
             thumb = driver.find_element(By.CSS_SELECTOR, "#container > section.contents > div.news_detail_body_group > section > div.min_inner > div.sec_body > div.news_cnt_detail_wrap > div.thumb_area.img > figure > div")
             try:
                 img = thumb.find_element(By.TAG_NAME, "img").get_attribute("src")
@@ -250,13 +300,22 @@ def fun(news):
             driver.close()
             driver.switch_to.window(driver.window_handles[0])
             
+            date = date.replace(".", "-")
+            secondExists = date.split(":")
+            if len(secondExists) <= 2 :
+                date += ":00"
+            try:
+                dt = datetime.datetime.strptime(date, "%Y-%m-%d %I:%M:%S %p")
+            except:
+                dt = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
+
             dict = {
                 "name" : news,
                 "title" : title.strip(),
                 "link" : link.strip(),
                 "content" : content.strip(),
                 "img" : img.strip(),
-                "date" : ymd
+                "date" : dt
             }
             
             news_data.append(dict)
@@ -265,7 +324,7 @@ def fun(news):
             (
                 select name, title from news where name = %s and title = %s
             )"""
-            cursor.execute(news_insert, (news, dict["title"], dict["link"], dict["content"], dict["img"], ymd, news, dict["title"]))
+            cursor.execute(news_insert, (news, dict["title"], dict["link"], dict["content"], dict["img"], dt, news, dict["title"]))
 
             conn.commit()
 
@@ -305,6 +364,12 @@ def fun(news):
             time.sleep(2)
             
             title = driver.title
+
+            try:
+                date = driver.find_element(By.CSS_SELECTOR, ".txt-date").text
+            except:
+                print("한국경제 날짜 패스")
+
             news_body = driver.find_element(By.CLASS_NAME, "article-body")
             inner_html = news_body.get_attribute("innerHTML")
             #bs를 이용해 html파싱
@@ -328,13 +393,22 @@ def fun(news):
             driver.close()
             driver.switch_to.window(driver.window_handles[0])
             
+            date = date.replace(".", "-")
+            secondExists = date.split(":")
+            if len(secondExists) <= 2 :
+                date += ":00"
+            try:
+                dt = datetime.datetime.strptime(date, "%Y-%m-%d %I:%M:%S %p")
+            except:
+                dt = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
+
             dict = {
                 "name" : news,
                 "title" : title.strip(),
                 "link" : link.strip(),
                 "content" : content.strip(),
                 "img" : img.strip(),
-                "date" : ymd
+                "date" : dt
             }
             
             news_data.append(dict)
@@ -343,7 +417,7 @@ def fun(news):
             (
                 select name, title from news where name = %s and title = %s
             )"""
-            cursor.execute(news_insert, (news, dict["title"], dict["link"], dict["content"], dict["img"], ymd, news, dict["title"]))
+            cursor.execute(news_insert, (news, dict["title"], dict["link"], dict["content"], dict["img"], dt, news, dict["title"]))
 
             conn.commit()
 
@@ -385,6 +459,14 @@ def fun(news):
             time.sleep(2)
             
             title = driver.title
+
+            try:
+                date = driver.find_element(By.CSS_SELECTOR, ".date>time").text
+            except:
+                print("머니투데이")
+                pass
+            
+
             news_body = driver.find_element(By.ID, "textBody")
             inner_html = news_body.get_attribute("innerHTML")
             #bs를 이용해 html파싱
@@ -409,13 +491,22 @@ def fun(news):
             driver.close()
             driver.switch_to.window(driver.window_handles[0])
             
+            date = date.replace(".", "-")
+            secondExists = date.split(":")
+            if len(secondExists) <= 2 :
+                date += ":00"
+            try:
+                dt = datetime.datetime.strptime(date, "%Y-%m-%d %I:%M:%S %p")
+            except:
+                dt = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
+
             dict = {
                 "name" : news,
                 "title" : title.strip(),
                 "link" : link.strip(),
                 "content" : content.strip(),
                 "img" : img.strip(),
-                "date" : ymd
+                "date" : dt
             }
             
             news_data.append(dict)
@@ -424,7 +515,7 @@ def fun(news):
             (
                 select name, title from news where name = %s and title = %s
             )"""
-            cursor.execute(news_insert, (news, dict["title"], dict["link"], dict["content"], dict["img"], ymd, news, dict["title"]))
+            cursor.execute(news_insert, (news, dict["title"], dict["link"], dict["content"], dict["img"], dt, news, dict["title"]))
 
             conn.commit()
 
