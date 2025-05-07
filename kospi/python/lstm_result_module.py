@@ -13,6 +13,17 @@ print(__name__)
 
 #매일 오후 4시반에 lstm 모델을 이용해 다음날 코스피 지수를 예측하는 함수
 def job():
+    #주말이랑, 공휴일 제외
+    #오늘
+    today = date.today()
+    #평일
+    if is_weekend(today):
+        #공휴일
+        if is_holiday(str(today)):
+            print("평일 공휴일 안돌아감")
+            return
+    else:
+        return
     #모델 로드해서 결과치 뽑아내기
     model = keras.models.load_model("./model/LSTM_KOSPI.keras")
     kospi_df = pd.read_csv("./datas/training/kospi(60m).csv")
@@ -62,15 +73,7 @@ def is_weekend(date):
     return date.weekday() < 5
 
 schedule.every().day.at("16:00").do(job)
-today = date.today()
-if is_weekend(today):
-    #평일
-    if is_holiday(str(today)):
-        print("평일 공휴일 안돌아감")
-    else:
-        while True:
-            schedule.run_pending()
-            time.sleep(1)
-else:
-    #주말
-    print("주말 안돌아감")
+    
+while True:
+    schedule.run_pending()
+    time.sleep(1)

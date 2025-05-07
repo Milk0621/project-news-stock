@@ -170,8 +170,8 @@ header ul li:hover, #login-btn:hover, #logout-btn:hover{
 }
 #alarm{
 	position: fixed;
-	right: -35%;
-	width: 35%;
+	right: -20%;
+	width: 20%;
 	height: 35%;
 	
 }

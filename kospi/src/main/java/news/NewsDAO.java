@@ -41,10 +41,11 @@ public class NewsDAO extends DBManager{
 		DBConnect();
 		
 		String sql = "select * from news ";
-		if(name != "전체") {
+		if(!name.equals("전체")) {
 			sql += "where name = '"+name+"' ";
 		}
 		sql += "order by date desc limit "+startNum+", "+limitSize+"";
+		System.out.println("page : " + sql);
 
 		executeQuery(sql);
 		
@@ -147,11 +148,15 @@ public class NewsDAO extends DBManager{
 	}
 	
 	//뉴스 갯수 조회
-	public int getCount() {
+	public int getCount(String name) {
 		driverLoad();
 		DBConnect();
 		
-		String sql = "select count(*) as cnt from news";
+		String sql = "select count(*) as cnt from news ";
+		if(!name.equals("전체")) {
+			sql += "where name = '"+name+"' ";
+		}
+		System.out.println("count : " + sql);
 		executeQuery(sql);
 		
 		if(next()) {

@@ -6,8 +6,13 @@
 <%@ include file="header.jsp" %>
 <%
 	String pageNum = request.getParameter("page");
+	String company = request.getParameter("company");
 	if(pageNum == null){
 		pageNum = "1";
+	}
+	
+	if(company == null){
+		company = "전체";
 	}
 
 	NewsDAO dao = new NewsDAO();
@@ -18,14 +23,11 @@
 	
 	int pageGroupSize = 10;
 	int startPage = ((currentPage - 1) / pageGroupSize) * pageGroupSize + 1;
-	int totalCount = dao.getCount();
+	
+	int totalCount = dao.getCount(company);
+	
 	int totalPage = (int)Math.ceil(totalCount / (double)limitperPage);
 	int endPage = Math.min(startPage + pageGroupSize - 1, totalPage);
-	
-	String company = request.getParameter("company");
-	if(company == null){
-		company = "전체";
-	}
 	
 	List<NewsVO> plist = dao.pageList(startNum, limitperPage, company);
 %>
@@ -76,8 +78,8 @@
 					</div>
 				<%} %>
 			<ul class="headline_page">
-				<% for(int i = 0; i < totalSlides; i++){ %>
-					<li><button type="button" class="slide-btn" data-slide="<%=i+1%>"><%=i+1%></button></li>
+				<% for(int i = 0; i < totalSlides; i++){%>
+					<li><button type="button" class="slide-btn<%= i == 0 ? " top_btn" : "" %>" data-slide="<%=i+1%>"><%=i+1%></button></li>
 				<%} %>
 			</ul>
 		</div>
@@ -85,12 +87,12 @@
 			<h1>언론사별 뉴스</h1>
 			<div class="media_news">
 				<div class="media_category">
-				    <button onclick='location.href="news.jsp?page=<%=currentPage %>&company=전체"' data-name="전체">전체</button>
-				    <button onclick='location.href="news.jsp?page=<%=currentPage %>&company=이데일리"' data-name="이데일리">이데일리</button>
-				    <button onclick='location.href="news.jsp?page=<%=currentPage %>&company=아시아경제"' data-name="아시아경제">아시아경제</button>
-				    <button onclick='location.href="news.jsp?page=<%=currentPage %>&company=매일경제"' data-name="매일경제">매일경제</button>
-				    <button onclick='location.href="news.jsp?page=<%=currentPage %>&company=한국경제"' data-name="한국경제">한국경제</button>
-				    <button onclick='location.href="news.jsp?page=<%=currentPage %>&company=머니투데이"' data-name="머니투데이">머니투데이</button>
+				    <button class="<%= company.equals("전체") ? "active" : "" %>" onclick='location.href="news.jsp?company=전체"' data-name="전체">전체</button>
+				    <button class="<%= company.equals("이데일리") ? "active" : "" %>" onclick='location.href="news.jsp?company=이데일리"' data-name="이데일리">이데일리</button>
+				    <button class="<%= company.equals("아시아경제") ? "active" : "" %>" onclick='location.href="news.jsp?company=아시아경제"' data-name="아시아경제">아시아경제</button>
+				    <button class="<%= company.equals("매일경제") ? "active" : "" %>" onclick='location.href="news.jsp?company=매일경제"' data-name="매일경제">매일경제</button>
+				    <button class="<%= company.equals("한국경제") ? "active" : "" %>" onclick='location.href="news.jsp?company=한국경제"' data-name="한국경제">한국경제</button>
+				    <button class="<%= company.equals("머니투데이") ? "active" : "" %>" onclick='location.href="news.jsp?company=머니투데이"' data-name="머니투데이">머니투데이</button>
 				</div>
 				<% for(int i = 0; i < plist.size(); i++){ 
 					NewsVO vo = plist.get(i);
