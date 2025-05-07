@@ -1,35 +1,31 @@
 package senti_result;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import db.DBManager;
 
 public class SentiResultDAO extends DBManager{
 	
 	//감성결과 조회
-	public List<SentiResultVO> sentiList(){
-		List<SentiResultVO> list = new ArrayList<SentiResultVO>();
-		
+	public SentiResultVO sentiList(String no){		
 		driverLoad();
 		DBConnect();
 		
-		String sql = "select * from senti_result";
+		String sql = "select * from senti_result where no = "+no+"";
 		executeQuery(sql);
 		
-		while(next()) {
-			SentiResultVO vo = new SentiResultVO();
+		SentiResultVO vo = new SentiResultVO();
+		if(next()) {
 			vo.setNo(getString("no"));
-			vo.setDate(getString("date"));
-			vo.setResult(getString("result"));
+			vo.setSno(getString("sno"));
 			vo.setGood(getString("good"));
+			vo.setMid(getString("mid"));
 			vo.setBad(getString("bad"));
-			list.add(vo);
+			vo.setResult(getString("result"));
+			DBDisConnect();
+			return vo;
+		}else {			
+			DBDisConnect();
+			return null;
 		}
-		
-		DBDisConnect();
-		
-		return list;
 	}
 
 }

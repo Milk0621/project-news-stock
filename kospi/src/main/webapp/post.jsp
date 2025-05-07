@@ -1,3 +1,5 @@
+<%@page import="senti_result.SentiResultVO"%>
+<%@page import="senti_result.SentiResultDAO"%>
 <%@page import="news.NewsVO"%>
 <%@page import="news.NewsDAO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -9,6 +11,8 @@
 	NewsVO newsVO = new NewsVO();
 	newsVO = newsDao.newsPost(no);
 	
+	SentiResultDAO sdao = new SentiResultDAO();
+	SentiResultVO svo = sdao.sentiList(no);
 %>
 <!DOCTYPE html>
 <html>
@@ -23,6 +27,9 @@
 			<h1><%= newsVO.getTitle() %></h1>
 			<span><%= newsVO.getName() %> ·</span> <span><%= newsVO.getDate() %></span>
 			<div><a href="<%= newsVO.getLink() %>"><%= newsVO.getLink() %></a></div>
+		</div>
+		<div class="percent">
+			<p>이 뉴스를 <span><%=svo.getResult()%></span>으로 분류 했어요!</p>
 		</div>
 		<img src="<%= newsVO.getImg() %>">
 		<p class="text">

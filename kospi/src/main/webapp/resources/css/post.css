@@ -13,7 +13,7 @@
 }
 .post-top h1{
 	font-size: 1.8rem;
-	color: #fff;
+	color: #e8e8ea;
 	font-weight: 600;
 }
 .post-top span{
@@ -24,10 +24,18 @@
 .post-top a{
 	opacity: 0.5;
 }
+.percent{
+	margin-top: 10px;
+}
+.percent p span{
+	color: #e8e8ea;
+	text-decoration: underline;
+}
 .text {
     /* text-align :justify; */
     text-align: left;
     font-size: 1.1rem;
     line-height: 1.7rem;
-    margin: 15px 0;
+    margin-top: 15px;
+    margin-bottom: 50px;
 }

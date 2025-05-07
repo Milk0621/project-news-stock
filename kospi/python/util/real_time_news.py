@@ -250,7 +250,7 @@ def fun(news):
             if cursor.lastrowid > 0:
                 #cursor.lastrowid = 114 or 115 일반 숫자
                 #keyword = [1,2,3] 리스트
-                content = content + title
+                con_text = con_text + title
 
                 senti_result, keywords, percentages = kobert_keyword(con_text)
 
@@ -317,7 +317,7 @@ def fun(news):
                 "name" : news,
                 "title" : title.strip(),
                 "link" : link.strip(),
-                "content" : content.strip(),
+                "content" : con_text.strip(),
                 "img" : img.strip(),
                 "date" : dt
             }
@@ -335,7 +335,7 @@ def fun(news):
             if cursor.lastrowid > 0:
                 #cursor.lastrowid = 114 or 115 일반 숫자
                 #keyword = [1,2,3] 리스트
-                content = content + title
+                con_text = con_text + title
                 senti_result, keywords, percentages = kobert_keyword(con_text)
 
                 print(cursor.lastrowid)
