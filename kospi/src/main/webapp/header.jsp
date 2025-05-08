@@ -141,9 +141,9 @@
 						
 				%>
 						<div class="alarm-con">
-							<p><%= avo.getTitle() %></p>
+							<span><%= avo.getTitle() %></span>
 							<p><%= avo.getContent() %></p>
-							<p><%= avo.getDate() %></p>
+							<span><%= avo.getDate() %></span>
 						</div>
 				<%
 					}
@@ -272,6 +272,7 @@ $(document).ready(function () {
     	if ($(event.target).is("#delete_user")){
     		$("#delete_user").fadeOut();
     	}
+    	
     })
     
     
@@ -332,9 +333,9 @@ $(document).ready(function () {
 			
 			let alarmHtml = "";
 			alarmHtml += '<div class="alarm-con">'
-			alarmHtml += '<p>'+msg.message+'</p>'
+			alarmHtml += '<span>'+msg.message+'</span>'
 			alarmHtml += '<p>'+msg.content+'</p>'
-			alarmHtml += '<p>'+msg.date+'</p>'
+			alarmHtml += '<span>'+msg.date+'</span>'
 			alarmHtml += '</div>'
 			
 			$("#alarms").prepend(alarmHtml)

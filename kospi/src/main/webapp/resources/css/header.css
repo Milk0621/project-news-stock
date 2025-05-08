@@ -169,7 +169,7 @@ header ul li:hover, #login-btn:hover, #logout-btn:hover{
 }
 #alarm{
 	position: fixed;
-	right: -20%;
+	right: -35%;
 	width: 20%;
 	height: 35%;
 	
@@ -177,9 +177,10 @@ header ul li:hover, #login-btn:hover, #logout-btn:hover{
 .alarm-info{
 	background: #2c2c35;
 	padding: 20px;
-	margin-top: 50%;
 	position: relative;
 	text-align: left;
+	right: 35%;
+	top: 60%;
 }
 .modal-chat h2, .alarm-info h2{
 	font-size: 1.2rem;
@@ -241,6 +242,13 @@ header ul li:hover, #login-btn:hover, #logout-btn:hover{
 }
 .alarm-con{
 	border-bottom: 1px solid #fff;
+	padding: 10px 0;
+}
+.alarm-con span{
+	font-size: 0.9rem;
+}
+.alarm-con p {
+	color: #e8e8ea;
 }
 .delete_user{
 	display: none;
