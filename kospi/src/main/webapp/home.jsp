@@ -77,19 +77,42 @@ console.log(chartData)
 const date = chartData.map(x => x.date);
 const price = chartData.map(x => Number(x.price)); // 숫자형으로 변환
 
+const filteredLabels = date.slice(-50);
+const filteredPrices = price.slice(-50);
+
 const ctx = document.getElementById("chart").getContext('2d');
 chart = new Chart(ctx, {
 	type : "line",
 	data : {
-		labels : date,
+		labels : filteredLabels,
 		datasets : [{
 			responsive:false,
 			label : "실시간 종가",
-			data : price,
+			data : filteredPrices,
 			borderWidth : 2
 		}]
+	},
+	options: {
+        responsive: true,
+        maintainAspectRatio: false,
+		scales: {
+			x: {
+				ticks: {
+					callback: function(val, index, ticks) {
+				    const raw = this.getLabelForValue(val);
+				    return raw.length > 10 ? raw.substring(5, 16) : raw;  // 'MM-DD'만 표시
+				  },
+					maxRotation: 0,
+					minRotation: 0
+				},
+				title: {
+				  display: true,
+				  text: '날짜 (월-일 시:분)'
+				}
+			}
+		}
 	}
-})
+});
 
 async function getToken(){	
 	const keyRes = await fetch("http://localhost:5000/api/keys");

@@ -45,5 +45,4 @@ public class SentiResultVO {
 		this.result = result;
 	}
 	
-	
 }
