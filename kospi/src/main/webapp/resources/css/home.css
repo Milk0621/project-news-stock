@@ -27,6 +27,8 @@ h2{
 	width: 100%;
 	display: flex;
 	justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 15px;
 }
 .content{
 	background-color: #26262d;

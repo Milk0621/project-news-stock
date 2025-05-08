@@ -32,10 +32,10 @@
 		<div class="analyze">
 			<h2>최근 뉴스 분석</h2>
 			<div class="content-box">
-			<% for(int i = 0; i < 3; i++){ 
+			<% for(int i = 0; i < 6; i++){ 
 				NewsVO vo = nlist.get(i);
 			%>
-				<div class="content" onclick="location.href='post.jsp?no=<%=vo.getNo() %>>'">
+				<div class="content" onclick="window.open('post.jsp?no=<%=vo.getNo() %>')">
 					<span><%=vo.getName() %></span> <span class="date"><%=vo.getDate() %></span>
 					<h3><%=vo.getTitle() %></h3>
 					<div class="keyword">
