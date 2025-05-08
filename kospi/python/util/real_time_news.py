@@ -472,86 +472,88 @@ def fun(news):
                 print("머니투데이")
                 pass
             
-
-            news_body = driver.find_element(By.ID, "textBody")
-            inner_html = news_body.get_attribute("innerHTML")
-            #bs를 이용해 html파싱
-            soup = BeautifulSoup(inner_html, "html.parser")
-            
-            #태그에서 직계자손만 검색
-            for child in soup.find_all(recursive=False):
-                #직계자손 html에서 삭제
-                child.decompose()
-            
-            content = soup.get_text(strip=True)
-            # con_text = " ".join([p.text.strip().replace("\n", " ") for p in content])
-            
             try:
-                img = news_body.find_element(By.TAG_NAME, "img").get_attribute("src")
+                news_body = driver.find_element(By.ID, "textBody")
+                inner_html = news_body.get_attribute("innerHTML")
+                #bs를 이용해 html파싱
+                soup = BeautifulSoup(inner_html, "html.parser")
+                
+                #태그에서 직계자손만 검색
+                for child in soup.find_all(recursive=False):
+                    #직계자손 html에서 삭제
+                    child.decompose()
+                
+                content = soup.get_text(strip=True)
+                # con_text = " ".join([p.text.strip().replace("\n", " ") for p in content])
+                
+                try:
+                    img = news_body.find_element(By.TAG_NAME, "img").get_attribute("src")
+                    time.sleep(2)
+                except:
+                    img = ""
+                    
                 time.sleep(2)
-            except:
-                img = ""
                 
-            time.sleep(2)
-            
-            driver.close()
-            driver.switch_to.window(driver.window_handles[0])
-            
-            date = date.replace(".", "-")
-            secondExists = date.split(":")
-            if len(secondExists) <= 2 :
-                date += ":00"
-            try:
-                dt = datetime.datetime.strptime(date, "%Y-%m-%d %I:%M:%S %p")
-            except:
-                dt = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
-
-            dict = {
-                "name" : news,
-                "title" : title.strip(),
-                "link" : link.strip(),
-                "content" : content.strip(),
-                "img" : img.strip(),
-                "date" : dt
-            }
-            
-            news_data.append(dict)
-            print(dict)
-            news_insert = """insert into news(name, title, link, content, img, date) select %s, %s, %s, %s, %s, %s from dual where not exists
-            (
-                select name, title from news where name = %s and title = %s
-            )"""
-            cursor.execute(news_insert, (news, dict["title"], dict["link"], dict["content"], dict["img"], dt, news, dict["title"]))
-
-            conn.commit()
-
-            if cursor.lastrowid > 0:
-                #cursor.lastrowid = 114 or 115 일반 숫자
-                #keyword = [1,2,3] 리스트
-                content = content + title
-                senti_result, keywords, percentages = kobert_keyword(content)
-
-                print(cursor.lastrowid)
-
-                last_row_id = [cursor.lastrowid] * len(keywords)
-                print(last_row_id)
-                print(keywords) 
-                data = list(zip(last_row_id, keywords))
+                driver.close()
+                driver.switch_to.window(driver.window_handles[0])
                 
-                #뉴스가 인서트됨
-                #키워드 테이블에 인서트
-                keyword_insert = "insert into keyword(no, keyword) values(%s, %s)"
-                cursor.executemany(keyword_insert,(data))
+                date = date.replace(".", "-")
+                secondExists = date.split(":")
+                if len(secondExists) <= 2 :
+                    date += ":00"
+                try:
+                    dt = datetime.datetime.strptime(date, "%Y-%m-%d %I:%M:%S %p")
+                except:
+                    dt = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
+
+                dict = {
+                    "name" : news,
+                    "title" : title.strip(),
+                    "link" : link.strip(),
+                    "content" : content.strip(),
+                    "img" : img.strip(),
+                    "date" : dt
+                }
+                
+                news_data.append(dict)
+                print(dict)
+                news_insert = """insert into news(name, title, link, content, img, date) select %s, %s, %s, %s, %s, %s from dual where not exists
+                (
+                    select name, title from news where name = %s and title = %s
+                )"""
+                cursor.execute(news_insert, (news, dict["title"], dict["link"], dict["content"], dict["img"], dt, news, dict["title"]))
+
                 conn.commit()
 
-                bad, mid, good = percentages
-                senti_insert = "insert into senti_result(no, bad, mid, good, result) values(%s, %s, %s, %s, %s)"
-                cursor.execute(senti_insert, (last_row_id[0], bad, mid, good, senti_result))
-                conn.commit()
-  
-            else:
-                #뉴스가 중복되어서 인서트 안함
-                #단어 인서트 안해도됨
+                if cursor.lastrowid > 0:
+                    #cursor.lastrowid = 114 or 115 일반 숫자
+                    #keyword = [1,2,3] 리스트
+                    content = content + title
+                    senti_result, keywords, percentages = kobert_keyword(content)
+
+                    print(cursor.lastrowid)
+
+                    last_row_id = [cursor.lastrowid] * len(keywords)
+                    print(last_row_id)
+                    print(keywords) 
+                    data = list(zip(last_row_id, keywords))
+                    
+                    #뉴스가 인서트됨
+                    #키워드 테이블에 인서트
+                    keyword_insert = "insert into keyword(no, keyword) values(%s, %s)"
+                    cursor.executemany(keyword_insert,(data))
+                    conn.commit()
+
+                    bad, mid, good = percentages
+                    senti_insert = "insert into senti_result(no, bad, mid, good, result) values(%s, %s, %s, %s, %s)"
+                    cursor.execute(senti_insert, (last_row_id[0], bad, mid, good, senti_result))
+                    conn.commit()
+    
+                else:
+                    #뉴스가 중복되어서 인서트 안함
+                    #단어 인서트 안해도됨
+                    pass
+            except:
                 pass
 
     print(f"{news} 저장!")

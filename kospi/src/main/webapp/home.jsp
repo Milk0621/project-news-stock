@@ -115,7 +115,7 @@ chart = new Chart(ctx, {
 });
 
 async function getToken(){	
-	const keyRes = await fetch("http://localhost:5000/api/keys");
+	const keyRes = await fetch("http://192.168.0.80:5000/api/keys");
 	const keyData = await keyRes.json();
 	const appKey = keyData.appkey;
 	const secretKey = keyData.secretkey;
