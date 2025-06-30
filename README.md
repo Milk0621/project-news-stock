@@ -45,7 +45,7 @@
 
 ---
 
-## 🧩 실시간 데이터 처리 구조
+## 📌 실시간 데이터 처리 구조
 
 ### 📦 데이터 수신/저장 (Python)
 - 키움증권 REST API로 실시간 주가 수신
@@ -70,30 +70,39 @@
 
 ## 🛠 기술 스택
 
-📌 백엔드
-Flask (Python) – API 서버 및 WebSocket 서버 구축
+### 🧩 백엔드
+- **Flask (Python)**
+  API 서버 및 WebSocket 서버 구축
 
-JSP (Java) – 사용자 인터페이스 일부 연동 처리
+- **JSP (Java)**
+  사용자 인터페이스 일부 연동 처리
 
-🎨 프론트엔드
-HTML, CSS, JavaScript – 실시간 차트 렌더링 및 사용자 인터페이스 구성
+### 🎨 프론트엔드
+- **HTML, CSS, JavaScript**
+  실시간 차트 렌더링 및 사용자 인터페이스 구성
 
-🧠 머신러닝 모델
-LSTM (TensorFlow/Keras) – KOSPI 지수 예측
+### 🧠 머신러닝 모델
+- **LSTM (TensorFlow/Keras)**
+  KOSPI 지수 예측
 
-KorFinBERT (PyTorch → TensorFlow 변환) – 뉴스 감성 분석
+- **KorFinBERT (PyTorch → TensorFlow 변환)**
+  뉴스 감성 분석
 
-🔍 데이터 수집
-Selenium, BeautifulSoup – 실시간 금융 뉴스 크롤링
+### 🔍 데이터 수집
+- **Selenium, BeautifulSoup**
+  실시간 금융 뉴스 크롤링
 
-🗄 데이터베이스
-MySQL – 수집 데이터 및 예측 결과 저장
+### 🗄 데이터베이스
+- **MySQL**
+  수집 데이터 및 예측 결과 저장
 
-🔄 실시간 처리
-WebSocket (Python ↔ JavaScript) – 실시간 예측 알림 및 채팅 기능 구현
+### 🔄 실시간 처리
+- **WebSocket (Python ↔ JavaScript)**
+  실시간 예측 알림 및 채팅 기능 구현
 
-🔗 외부 연동
-키움증권 REST API – 실시간 주가 데이터 수신
+### 🔗 외부 연동
+- **키움증권 REST API**
+  실시간 주가 데이터 수신
 
 ---
 
