@@ -72,6 +72,7 @@
 
 📌 백엔드
 Flask (Python) – API 서버 및 WebSocket 서버 구축
+
 JSP (Java) – 사용자 인터페이스 일부 연동 처리
 
 🎨 프론트엔드
@@ -79,6 +80,7 @@ HTML, CSS, JavaScript – 실시간 차트 렌더링 및 사용자 인터페이�
 
 🧠 머신러닝 모델
 LSTM (TensorFlow/Keras) – KOSPI 지수 예측
+
 KorFinBERT (PyTorch → TensorFlow 변환) – 뉴스 감성 분석
 
 🔍 데이터 수집
